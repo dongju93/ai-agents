@@ -15,11 +15,15 @@ class TranslationCrew:
     def translate_task(self) -> Task:
         return Task(config=self.tasks_config["translate_task"])  # type: ignore
 
+    @task
+    def retranslate_task(self) -> Task:
+        return Task(config=self.tasks_config["retranslate_task"])  # type: ignore
+
     @crew
     def assemble_crew(self) -> Crew:
         return Crew(
             agents=[self.translator_agent()],
-            tasks=[self.translate_task()],
+            tasks=[self.translate_task(), self.retranslate_task()],
             verbose=True,
         )
 

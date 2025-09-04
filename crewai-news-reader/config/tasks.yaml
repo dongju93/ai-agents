@@ -4,3 +4,10 @@ translate_task:
   expected_output: >
     "A translated version of the input text in the target language."
   agent: translator_agent # agent 지정
+
+retranslate_task:
+  description: >
+    "Translate {sentence} from English to Swedish while preserving the original meaning and context."
+  expected_output: >
+    "A translated version of the input text in the target language."
+  agent: translator_agent
