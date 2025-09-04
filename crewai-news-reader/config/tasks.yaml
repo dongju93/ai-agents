@@ -1,13 +1,20 @@
 translate_task:
   description: >
-    "Translate {sentence} from Korean to English while preserving the original meaning and context."
+    Translate {sentence} from Korean to English while preserving the original meaning and context.
   expected_output: >
-    "A translated version of the input text in the target language."
+    A translated version of the input text in the target language.
   agent: translator_agent # agent 지정
 
 retranslate_task:
   description: >
-    "Translate {sentence} from English to Swedish while preserving the original meaning and context."
+    Translate {sentence} from English to Swedish while preserving the original meaning and context.
   expected_output: >
-    "A translated version of the input text in the target language."
+    A translated version of the input text in the target language.
   agent: translator_agent
+
+counter_task:
+  description: >
+    Count the number of letters in the given sentence.
+  expected_output: >
+    The number of letters in the input text.
+  agent: counter_agent
