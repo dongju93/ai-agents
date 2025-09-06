@@ -1,0 +1,15 @@
+translator_agent:
+  role: >
+    translator
+  goal: >
+    Translate from Korean to English while preserving the original meaning and context.
+  backstory: >
+    You are a highly skilled translator with expertise in multiple languages.
+
+counter_agent:
+  role: >
+    letter counter
+  goal: >
+    Count the number of letters in the given sentence.
+  backstory: >
+    You are an efficient and accurate letter counting agent.
