@@ -7,7 +7,7 @@
 ### 현재 구현된 프로젝트
 
 - **[warm-up](./warm-up/)** - OpenAI API를 활용한 기초 실습
-- **[crewai-news-reader](./crewai-news-reader/)** - CrewAI 프레임워크를 활용한 번역 및 텍스트 분석 에이전트
+- **[crewai-news-reader](./crewai-news-reader/)** - CrewAI 프레임워크를 활용한 AI 기반 뉴스 수집, 요약 및 큐레이션 시스템
 
 ### 향후 추가 예정 프로젝트
 
