@@ -1,20 +1,162 @@
-translate_task:
+news_content_harvest_task:
   description: >
-    Translate {sentence} from Korean to English while preserving the original meaning and context.
-  expected_output: >
-    A translated version of the input text in the target language.
-  agent: translator_agent # agent 지정
+    Initiate a systematic content harvesting expedition to gather and organize original news articles on the designated {topic}—provided as user input (e.g., "AI ethical dilemmas" or "software engineering breakthroughs")—forming the bedrock for downstream summarization, curation, and strategic insights in the CrewAI workflow. Commence by invoking the search_tool to conduct targeted queries across reliable news publishers—such as Reuters, BBC, The New York Times, Bloomberg, The Guardian, or Wired—aiming to uncover 10-15 initial results that are recent (within the last 30 days), authoritative, and deeply relevant to the user-specified {topic} in domains like software engineering breakthroughs, AI ethical dilemmas, or emerging market trends. Craft search queries with precision, incorporating variations like "{topic} latest developments site:reuters.com" or "{topic} analysis site:bbc.com" to ensure diversity in global and specialized perspectives, while filtering out previews, snippets, or low-credibility sources (e.g., blogs or unverified aggregators). Validate each result for credibility using built-in metrics (e.g., publisher reputation, fact-check history) and relevance (e.g., keyword alignment, topical depth), then apply deduplication logic to eliminate redundant entries based on titles, URLs, or content hashes. Upon selection of 5-8 high-quality articles, transition to the scrape_tool to extract the full, unaltered original content from the canonical URLs, capturing the complete article body—including in-depth narratives, expert quotes, data tables, and technical details—while excluding extraneous elements like ads, sidebars, or metadata previews that could compromise authenticity. Navigate challenges ethically by adhering to site policies, handling dynamic content with retries, and logging any access issues (e.g., paywalls or rate limits) for auditability. Compile the harvested data into a cohesive markdown structure, assigning categories (e.g., "Technology Innovation," "Market Impact"), credibility scores (1-10 based on source reliability and verification), and relevance scores (1-10 tied to {topic} alignment), with timestamps for the entire process. This task embodies a rigorous, tool-driven pipeline—search_tool for discovery, scrape_tool for depth, organize for utility—ensuring ethical sourcing, bias mitigation, and completeness to deliver a polished collection that empowers the team with verifiable, raw intelligence, accelerates project momentum in technical fields, and transforms scattered news into a navigable knowledge repository ripe for advanced processing.
+  expected_output: > # Giving output example will improve performance
+    A well-structured markdown document containing the collected news articles with this exact format:
 
-retranslate_task:
-  description: >
-    Translate {sentence} from English to Swedish while preserving the original meaning and context.
-  expected_output: >
-    A translated version of the input text in the target language.
-  agent: translator_agent
+    # News Articles Collection: {topic}
 
-counter_task:
+    **Collection Summary**
+    - Total articles found:
+    - Articles after filtering:
+    - Duplicates removed:
+    - Sources accessed:
+    - Search queries used:
+    - Search timestamp:
+
+    ---
+
+    ## Article 1: [Article Headline]
+
+    **Source:**
+    **Date:**
+    **URL:**
+    **Category:**
+    **Credibility Score:**
+    **Relevance Score:**
+
+
+    ---
+    [Use this format for all articles...]
+  agent: news_hunter_agent
+  markdown: true # Markdown format output
+  output_file: news/content.md
+  create_directory: true
+
+news_summarize_task:
   description: >
-    Count the number of letters in the given sentence.
+    Delve into the art of distillation by processing the curated collection of original news articles from prior harvesting efforts, transforming raw, voluminous content into a tiered summary ecosystem that caters to diverse stakeholder needs within the CrewAI framework. Leverage advanced summarization techniques, such as abstractive NLP models (e.g., BART or T5 variants), extractive highlighting for key entities, and semantic clustering to generate three progressive levels of synthesis per article: a tweet-length headline summary for rapid scanning, an executive briefing for managerial overviews, and a comprehensive narrative for in-depth technical exploration. Begin by ingesting the markdown-structured input from content_harvesting_task, validating metadata (sources, dates, URLs) for accuracy and completeness, and—if necessary to ensure full, up-to-date content—invoking the `scrape_tool` to re-extract or supplement the unaltered original article body from canonical URLs, capturing any missing in-depth narratives, expert quotes, data tables, or technical details while excluding extraneous elements like ads or sidebars. Apply relevance filters post-validation to ensure alignment with the overall collection focus, emphasizing core elements like software development methodologies, AI algorithmic advancements, or market volatility impacts. For each article, extract and condense critical components: identify pivotal themes, quantify statistics (e.g., growth rates, adoption metrics), capture influential quotes from experts, and infer audience suitability (e.g., engineers, executives, or policymakers) based on content complexity and implications. Maintain neutrality by cross-checking for biases, preserving factual integrity through fidelity scores, and enhancing summaries with contextual linkages for holistic project insights. Structure the output as a unified markdown report, processing all available articles (aiming for 5-8) in sequential order, with an overview report quantifying throughput and timestamps for auditability. This task embodies a precision-engineered funnel—input validation → optional `scrape_tool` invocation if needed → multi-tier extraction → metric augmentation → formatted assembly—mitigating information overload, amplifying key signals in technical domains, and delivering summaries that not only inform but also inspire strategic pivots, such as optimizing AI models or refining software architectures, ultimately elevating the project's knowledge velocity and decision precision with layered, accessible intelligence.
   expected_output: >
-    The number of letters in the input text.
-  agent: counter_agent
+    A structured markdown document containing multi-tier summaries with this format:
+
+    # News Summaries: {topic}
+
+    **Summary Report Overview**
+    - Total articles processed:
+    - Summary generation date:
+
+    ---
+
+    ## Article 1: [Original Headline]
+
+    **Source:**
+    **Date:**
+    **Original URL:**
+
+    ### 📱 Headline Summary (Tweet-length)
+    [280-character summary here...]
+
+    ### 📋 Executive Summary
+    [150-200 word professional briefing here...]
+
+    ### 📖 Comprehensive Summary
+    [300-500 word detailed summary with full context here...]
+
+    **Summary Quality Metrics:**
+    - Recommended audience:
+    - Key topics covered:
+    - Important statistics:
+    - Notable quotes:
+
+    ---
+
+    ## Article 2: [Next Article Headline] 
+
+    [Continue same format for all articles...]
+  agent: news_summarizer_agent
+  markdown: true
+  output_file: news/summary.md
+  create_directory: true
+
+news_report_task:
+  description: >
+    Orchestrate the culmination of the intelligence pipeline by assembling a polished, daily news briefing from the tiered summaries generated in prior summarization efforts on {topic}, transforming disparate insights into a unified, executive-grade report that serves as the project's strategic compass. Begin by reviewing the structured markdown input from summarization_task, prioritizing articles based on relevance scores, impact metrics (e.g., statistics on AI adoption rates or software efficiency gains), and timeliness to designate a lead story—ideally the highest-relevance item with broad implications for {topic}, such as a breakthrough in machine learning algorithms or regulatory shifts in tech ethics. Employ editorial judgment informed by advanced analytics (e.g., topic modeling with LDA or sentiment aggregation) to segment content into predefined sections: select 1-2 stories for "Today's Lead Story" with comprehensive summaries for maximum depth; allocate 2-3 high-velocity items to "Breaking News & Developments" using executive summaries for brevity; dedicate "Technology & Innovation" to 2-4 technically dense pieces (e.g., on code optimization or cloud-native advancements) with tailored summary levels; and reserve secondary or contextual items for "Additional Reading." Craft compelling introductions for each section to provide narrative flow, highlighting synergies across stories like interconnected trends in AI-driven software development. Infuse the "Editor's Analysis" with synthesized themes—drawing from quality metrics like key topics and quotes—offering implications (e.g., how {topic} influences project roadmaps) and forward-looking projections based on pattern recognition. Ensure all elements maintain technical fidelity, neutrality (bias-flagged via cross-referencing), and hyperlinks for verifiability, while optimizing for readability with markdown best practices. This task represents a capstone assembly line—input aggregation → editorial prioritization → analytical synthesis → formatted publication—mitigating fragmentation, amplifying collective intelligence, and empowering software engineers and stakeholders with a briefing that not only recaps the day's {topic}-centric developments but also forecasts trajectories, such as potential disruptions in agile methodologies or AI governance, thereby accelerating informed decisions, fostering innovation cycles, and positioning the project at the vanguard of technological evolution with precision, professionalism, and profound impact.
+  expected_output: >
+    A complete, publication-ready markdown document with this professional structure:
+
+    # Daily News Briefing: {topic}
+
+    **Date:** 
+    **Generated:** 
+    **Stories Covered:** 
+
+    ## Executive Summary
+
+    [Compelling opening paragraph that captures the day's most important developments 
+    and sets context for the full briefing]
+
+    ---
+
+    ## 🚨 Today's Lead Story
+
+    ### [Compelling headline for lead story]
+
+    [Comprehensive summary with full context, implications, and significance]
+
+    **Source:** [Publication] | **Read more:** [Link](url)
+
+    ---
+
+    ## 📈 Breaking News & Developments
+
+    [Editorial introduction to this section]
+
+    ### [Story Headline]
+    [Executive or comprehensive summary based on editorial plan]
+    **Source:** [Publication] | **Read more:** [Link](url)
+
+    ### [Story Headline]  
+    [Executive or comprehensive summary based on editorial plan]
+    **Source:** [Publication] | **Read more:** [Link](url)
+
+    ---
+
+    ## 💼 Technology & Innovation
+
+    [Editorial introduction to this section]
+
+    ### [Story Headline]
+    [Appropriate summary level based on editorial decisions]
+    **Source:** [Publication] | **Read more:** [Link](url)
+
+    [Continue with all sections as defined in editorial plan...]
+
+    ---
+
+    ## 🎯 Editor's Analysis
+
+    **Key Themes Today:**
+    - [Major trend or theme identified across stories]
+    - [Secondary pattern or development]
+
+    **What This Means:**
+    [Editorial insight about broader implications of the day's news]
+
+    **Looking Ahead:**
+    [What to watch for in coming days based on today's developments]
+
+    ---
+
+    ## 📚 Additional Reading
+
+    **Related Stories:**
+    - [Brief mentions of secondary stories with links]
+
+    **Background Context:**
+    - [Links to important background information for ongoing stories]
+
+    ---
+  agent: news_curator_agent
+  markdown: true
+  output_file: news/report.md
+  create_directory: true
