@@ -1,0 +1,140 @@
+# Dongju Lee
+**Backend Python Software Engineer**
+📧 spdlqj011@gmail.com | 📱 +82-10-3247-8760  
+🌐 Portfolio: [Notion Portfolio](https://www.notion.so/dongjulee/Portfolio-e0c6d62ecfba4c3996a920c69322afd3) | GitHub: github.com/dongju93  
+📍 Seoul, South Korea
+
+---
+
+## Professional Summary
+Passionate Backend Developer with 4 years and 10 months of experience specializing in Python-based server architecture, API development, and scalable system design. Expert in FastAPI, Redis, and modern containerization technologies. Proven track record in building high-performance backend services, implementing real-time data processing systems, and leading technical projects from conception to deployment.
+
+---
+
+## Technical Skills
+**Backend:** Python, FastAPI, Django, RESTful APIs, GraphQL, gRPC, JWT Authentication  
+**Databases:** MySQL, MariaDB, PostgreSQL, MongoDB, Redis, Elasticsearch  
+**DevOps & Cloud:** Docker, Kubernetes, NGINX, Jenkins, Ubuntu, Git  
+**Data Processing:** Polars, Pandas, ETL Pipelines, Real-time Streaming  
+**Monitoring:** Prometheus, InfluxDB, Grafana, Grafana Loki, Grafana Alloy  
+**AI/ML:** LLM, RAG Pipelines, AI Agents, CrewAI  
+**Others:** Rust, Golang, Prefect Workflows, AES Encryption, SFTP
+
+---
+
+## Professional Experience
+
+### Backend/R&D Engineer (Assistant Manager)
+**PINOLIKE Co., LTD.** | Seoul, South Korea | *May 2024 - Present*
+
+**Backend Development:**
+- Architected high-performance async API servers using FastAPI with Pydantic for data validation and serialization
+- Implemented modular design patterns separating authentication, data collection, and search functionalities
+- Built multi-database architecture: MariaDB for relational data, Redis for caching, Elasticsearch for search
+- Developed async event-driven architecture using Redis Pub/Sub for inter-service communication and real-time data processing
+- Implemented JWT-based stateless authentication with Access/Refresh token system
+- Created async data pipelines for periodic collection from various external feeds
+- Integrated Go services with Python projects using gRPC for efficient cross-language communication
+- Developed local security modules with AES encryption for sensitive data protection
+- Built RAG pipelines for knowledge-based LLM response generation using Python
+
+**System Architecture:**
+- Containerized applications with Docker and multi-stage builds for optimized deployment images
+- Designed Kubernetes-based container deployment environments
+- Integrated monitoring stack: Prometheus, InfluxDB, Elasticsearch, and Grafana
+- Implemented log parsing and collection system using Grafana Alloy and Grafana Loki
+- Established Python code conventions and quality standards
+- Built automated testing and static analysis pipeline with Pytest, Ruff, and Pyright/MyPy
+- Created pre-commit hooks for automated code analysis and testing
+
+**Performance Optimization:**
+- Optimized large-scale data processing using Polars for handling hundreds of megabytes of 2D data
+- Implemented NGINX load balancing and caching strategies for improved service response times
+
+*Salary: 52M KRW*
+
+### Project Manager
+**CLUMELL Co., LTD.** | Seoul, South Korea | *June 2023 - April 2024*
+
+**External Contract Project Management:**
+- Managed WBS and weekly reporting for project progress tracking
+- Designed Endpoint log collection system using Elastic Stack and Sysmon
+- Developed high-performance log data dump program in Rust for optimized data processing
+- Extracted and processed 1,000+ Endpoint IoC reports in JSON format using Python
+- Created detailed service specifications and UI designs using Google Slides and Notion
+- Established QA, VOC, and internal feedback management systems via Notion
+- Supervised external development teams and provided technical support
+
+**Partner Collaboration Project Management:**
+- Provided system interface guidance and sample code for seamless technical collaboration
+- Built comprehensive feedback management system using Notion
+- Established Ubuntu-based testing environments for stable development and verification
+
+*Salary: 40M KRW*
+
+### IT Consultant
+**Daily Soft Co., LTD.** | Seoul, South Korea | *January 2021 - June 2023*
+
+**Infrastructure Project Management:**
+- **Korea-Tunisia Digital Government Cooperation Project (2021.09-2021.12):** Led Tunisia local development environment and cloud vendor selection, facilitated Korea-Tunisia technical meetings, and designed integrated system architecture
+- **National Debt Management System Construction (2022.04-2023.02):** Designed infrastructure, performed PostgreSQL data migration, deployed applications with Docker, and established Linux/Windows servers with SFTP environments
+
+**Information System Consulting:**
+- **National Debt Management System ISP (2021.06-2021.11):** Performed database conceptual/logical modeling, designed ESB integration solutions, and established metadata and time-series data management processes
+- **Closed Medical Institution Records Management System BPR/ISP (2021.04-2021.10):** Analyzed US FHIR standards and proposed Korean data standardization solutions
+- **SME Regulation Early Warning System ISP (2021.02-2021.05):** Conducted legal bill data analysis using Python and Jupyter Notebook, created word cloud visualizations for SME-related bill classification
+- **Duty-Free Oil Purchase Information System ISP (2021.01-2021.04):** Analyzed existing databases and derived improvement strategies
+- **Disaster Safety Insurance Information System ISP (2021.02-2021.05):** Designed databases based on legal framework analysis
+
+*Salary: 36M KRW*
+
+---
+
+## Education
+
+### Bachelor's Degree in Information and Communication Engineering
+**Induk University** | Seoul, South Korea | *March 2012 - February 2019*  
+**GPA:** 3.54/4.5 | **Schedule:** Full-time
+
+### Technical High School Diploma
+**Seoul Technical High School** | Seoul, South Korea | *February 2009 - February 2012*  
+**Major:** Information Resources
+
+---
+
+## Certifications
+- **Information Processing Engineer** | Korea Human Resources Development Service | *May 2019*
+
+---
+
+## Projects & Initiatives
+
+### AI Agent Collaboration System
+*CrewAI, Python, LLM*
+- Developing autonomous AI agent collaboration system for news collection, summarization, and curation
+- Exploring agent design patterns and autonomous collaboration possibilities
+- Implementing multi-agent workflows for content processing and analysis
+
+### Personal Development Focus
+- Continuous learning of Python ecosystem changes, particularly FastAPI and Python version updates
+- Regular exploration of new frameworks and libraries to expand technical spectrum
+- Ongoing study of software architecture and scalable system design principles
+- Algorithm and data structure practice for maintaining fundamental development skills
+- Learning Golang for binary deployment and performance-critical environments
+
+---
+
+## Personal Statement
+Hello, I'm Dongju Lee, a Python Backend Developer.
+
+Development goes beyond mere work for me—it's a daily practice of continuous exploration and learning. Even after work hours, I naturally acquire the latest information by watching videos about backend technology trends and new development methodologies.
+
+Changes in the Python ecosystem, especially FastAPI and Python version updates, are my greatest interests. Through this, I understand new features and improvements while broadening my technical understanding. I regularly test new frameworks and libraries to expand my technology spectrum.
+
+I continuously study software architecture, particularly scalable system design principles, and seek ways to apply acquired knowledge in practice. I also consistently solve algorithm and data structure problems, considering them fundamental development skills.
+
+Recently, I've started learning Golang to explore new programming paradigms, seeing significant potential for binary deployment and performance-critical environments.
+
+Through side projects, I experiment with new technologies and implement ideas, gaining experience in solving technical challenges difficult to encounter in regular work. I'm currently developing an AI agent collaboration system using CrewAI, focusing on news collection, summarization, and curation while exploring agent design and autonomous collaboration possibilities.
+
+These activities are part of my continuous growth as a developer. Beyond improving technical proficiency, deep immersion in problem-solving processes is the core motivation that drives me.
