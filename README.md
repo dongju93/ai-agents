@@ -8,6 +8,7 @@
 
 - **[warm-up](./warm-up/)** - OpenAI API를 활용한 기초 실습
 - **[crewai-news-reader](./crewai-news-reader/)** - CrewAI 프레임워크를 활용한 AI 기반 뉴스 수집, 요약 및 큐레이션 시스템
+- **[crewai-job-hunter](./crewai-job-hunter/)** - CrewAI 프레임워크를 활용한 AI 채용 공고 탐색 및 지원서 관리 에이전트
 
 ### 향후 추가 예정 프로젝트
 
