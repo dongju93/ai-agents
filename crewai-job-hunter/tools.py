@@ -20,11 +20,28 @@ class WebSearchResults(TypedDict):
 
 
 @tool
-def web_search_tool(query: str, limit: int = 5) -> list[WebSearchResults] | str:
+def web_search_tool(query: str) -> list[WebSearchResults] | str:
+    """
+    Searches the web for relevant information based on the provided query using Firecrawl.
+
+    This tool performs a web search and returns structured results including titles, URLs, and cleaned markdown content.
+    It is designed for AI agents to gather external information from the web.
+
+    Args:
+        query (str): The search query string to look for on the web.
+
+    Returns:
+        list[WebSearchResults] | str: A list of dictionaries containing 'title', 'url', and 'markdown' for each result,
+        or a string error message if the search fails.
+
+    Example:
+        results = web_search_tool("Python web scraping")
+        # Returns up to search results with web content.
+    """
     firecrawl = Firecrawl(api_key=FIRECRAWL_API_KEY)
     results: SearchData = firecrawl.search(
         query=query,
-        limit=limit,
+        limit=5,
         sources=["web"],
         scrape_options=ScrapeOptions(formats=["markdown"]),
     )
