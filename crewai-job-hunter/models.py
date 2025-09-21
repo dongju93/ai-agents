@@ -32,7 +32,7 @@ class Job(BaseModel):
         list[str] | None, Field(description="필요한 기술")
     ] = None
     role_seniority_level: Annotated[
-        str | None, Field(description="Junior, Mid, Senior, Staff")
+        str | None, Field(description="Junior, Intermediate, Senior")
     ] = None
 
     years_of_experience_required: Annotated[
