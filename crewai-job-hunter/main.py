@@ -1,4 +1,5 @@
 from crewai import Agent, Crew, Task
+from crewai.knowledge.source.text_file_knowledge_source import TextFileKnowledgeSource
 from crewai.project import CrewBase, agent, crew, task
 from dotenv import load_dotenv
 
@@ -19,19 +20,28 @@ class JobHunterCrew:
 
     @agent
     def job_matching_agent(self) -> Agent:
-        return Agent(config=self.agents_config["job_matching_agent"])  # type: ignore
+        return Agent(
+            config=self.agents_config["job_matching_agent"],  # type: ignore
+        )
 
     @agent
     def resume_optimization_agent(self) -> Agent:
-        return Agent(config=self.agents_config["resume_optimization_agent"])  # type: ignore
+        return Agent(
+            config=self.agents_config["resume_optimization_agent"],  # type: ignore
+        )
 
     @agent
     def company_research_agent(self) -> Agent:
-        return Agent(config=self.agents_config["company_research_agent"])  # type: ignore
+        return Agent(
+            config=self.agents_config["company_research_agent"],  # type: ignore
+            tools=[web_search_tool],
+        )
 
     @agent
     def interview_prep_agent(self) -> Agent:
-        return Agent(config=self.agents_config["interview_prep_agent"])  # type: ignore
+        return Agent(
+            config=self.agents_config["interview_prep_agent"],  # type: ignore
+        )
 
     @task
     def job_extraction_task(self) -> Task:
@@ -78,7 +88,21 @@ class JobHunterCrew:
 
     @crew
     def crew(self) -> Crew:
-        return Crew(agents=self.agents, tasks=self.tasks, verbose=True)  # type: ignore
+        # Create knowledge source at crew level to avoid duplicates
+        resume_knowledge = TextFileKnowledgeSource(file_paths=["resume.txt"])
+
+        return Crew(
+            agents=self.agents,  # type: ignore
+            tasks=self.tasks,  # type: ignore
+            verbose=True,
+            knowledge_sources=[resume_knowledge],  # Crew-wide knowledge
+        )
 
 
-JobHunterCrew().crew().kickoff()
+JobHunterCrew().crew().kickoff(
+    inputs={
+        "level": "Intermediate",
+        "position": "Backend Python Software Engineer",
+        "location": "South Korea",
+    }
+)
