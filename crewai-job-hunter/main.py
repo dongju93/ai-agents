@@ -102,7 +102,7 @@ class JobHunterCrew:
 JobHunterCrew().crew().kickoff(
     inputs={
         "level": "Intermediate",
-        "position": "Backend Python Software Engineer",
-        "location": "South Korea",
+        "position": "Python Software Engineer",
+        "location": "United States of America",
     }
 )
