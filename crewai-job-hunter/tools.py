@@ -42,7 +42,7 @@ def web_search_tool(query: str) -> list[WebSearchResults] | str:
     firecrawl = Firecrawl(api_key=FIRECRAWL_API_KEY)
     results: SearchData = firecrawl.search(
         query=query,
-        limit=5,
+        limit=1,
         sources=["web"],
         scrape_options=ScrapeOptions(formats=["markdown"]),
     )
