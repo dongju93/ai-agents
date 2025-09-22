@@ -1,7 +1,6 @@
-```markdown
 # Dongju Lee
 
-**Intermediate Backend Python Engineer**  
+**Backend Python Software Engineer**  
 📧 spdlqj011@gmail.com | 📱 +82-10-3247-8760  
 🌐 Portfolio: https://www.notion.so/dongjulee/Portfolio-e0c6d62ecfba4c3996a920c69322afd3 | GitHub: github.com/dongju93  
 📍 Seoul, South Korea
@@ -10,83 +9,94 @@
 
 ## Professional Summary
 
-Results-driven Backend Developer with nearly 5 years of hands-on experience architecting and delivering scalable Python services. Expert in FastAPI, RESTful API design, containerization (Docker, Kubernetes) and high-performance data storage (PostgreSQL, Redis). Proven track record in writing unit/integration tests, performing code reviews, and collaborating cross-functionally with product and frontend teams to optimize service performance and reliability.
+Passionate Backend Developer with nearly 5 years of experience designing, developing, and maintaining Python-based services. Expert in FastAPI, Redis, PostgreSQL, and Elasticsearch integrations. Skilled in containerization and orchestration (Docker, Kubernetes) and building scalable, high-performance APIs. Proven ability to implement real-time data pipelines and automated CI/CD workflows. Eager to leverage cloud infrastructure, automation, and best practices to drive reliability and performance in AWS-powered environments.
 
 ---
 
-## Technical Skills
+## Core Technical Skills
 
-**Languages & Frameworks:**
+**Programming & Frameworks:**
 
-- Python (3.x), FastAPI, Flask
-- RESTful API design, Pydantic, gRPC
+- Python, FastAPI, Django, RESTful API, GraphQL, gRPC, JWT Authentication
 
 **Databases & Caching:**
 
-- PostgreSQL, MySQL, MariaDB
-- Redis, Elasticsearch
+- PostgreSQL, Redis, Elasticsearch, MySQL, MongoDB
 
-**DevOps & Infrastructure:**
+**Cloud & DevOps:**
 
-- Docker (multi-stage builds), Kubernetes (Helm, k8s YAML)
-- CI/CD: Jenkins, GitHub Actions
-- Monitoring & Logging: Prometheus, Grafana, Grafana Loki
+- Docker, Kubernetes, CI/CD (Jenkins), NGINX, Linux (Ubuntu), Working knowledge of AWS (EC2, RDS, S3)
 
-**Testing & Quality:**
+**Monitoring & Logging:**
 
-- Pytest, unittest, integration testing
-- Static analysis: MyPy, Ruff, pre-commit hooks
+- Prometheus, Grafana, ELK Stack (Elasticsearch, Logstash, Kibana), Grafana Loki
+
+**Data Processing & Analytics:**
+
+- Polars, Pandas, ETL Pipelines, Real-time Streaming
 
 ---
 
 ## Professional Experience
 
-### Backend / R&D Engineer (Assistant Manager)
+### PINOLIKE Co., LTD.
 
-PINOLIKE Co., LTD. — Seoul, South Korea  
-May 2024 – Present
+**Backend/R&D Engineer (Assistant Manager)** | Seoul, South Korea  
+_May 2024 – Present_
 
-- Designed and implemented scalable async backend services with **FastAPI**, serving 10k+ requests/day.
-- Defined and maintained RESTful endpoints using **Pydantic** for data validation and serialization.
-- Architected multi-database solutions: PostgreSQL for relational data and Redis for high-throughput caching.
-- Containerized microservices with **Docker** and deployed to **Kubernetes** clusters; automated rollouts with health-check probes.
-- Developed unit and integration tests in **Pytest**, achieving >90% coverage; actively participated in peer code reviews.
-- Integrated **Redis Pub/Sub** for event-driven inter-service communication and implemented gRPC bridges for Go-Python interoperability.
-- Configured monitoring stack (Prometheus + Grafana) and centralized logging with Grafana Loki to track performance metrics.
-- Collaborated with product and frontend teams on API contract design, optimizing endpoint performance (30%+ latency reduction).
+- Architected and built high-performance async API servers using **FastAPI** with Pydantic, achieving <100ms response times.
+- Designed a multi-database backend: **PostgreSQL** for relational data, **Redis** for caching, and **Elasticsearch** for full-text search; boosted query throughput by 40%.
+- Developed async, event-driven pipelines with Redis Pub/Sub for real-time data ingestion and processing.
+- Integrated Go microservices via **gRPC**, optimizing cross-language interactions.
+- Implemented stateless JWT authentication with secure access/refresh token flows.
+- Containerized services with **Docker** and deployed on **Kubernetes**, enabling auto-scaling and fault tolerance.
+- Established CI/CD pipelines using **Jenkins**, with automated testing (Pytest), linting (Ruff), and type checks (Pyright).
+- Monitored application health and logs via **Prometheus**, **Grafana**, and **ELK Stack** to ensure 99.9% uptime.
 
-### Software Developer & Project Manager
+### CLUMELL Co., LTD.
 
-CLUMELL Co., LTD. — Seoul, South Korea  
-June 2023 – April 2024
+**Project Manager & Technical Lead** | Seoul, South Korea  
+_June 2023 – April 2024_
 
-- Built a high-performance log ingestion pipeline in Python, processing 1,000+ JSON IoC reports daily.
-- Containerized data-processing services with Docker; designed CI/CD workflows for automated builds and deployments.
-- Developed and maintained RESTful APIs for internal tools, ensuring secure access via JWT-based authentication.
-- Defined service specifications and managed weekly sprint reports, liaising between stakeholders and offshore teams.
-- Established Ubuntu-based staging and testing environments; provided infrastructure support and troubleshooting.
+- Led design and implementation of a high-throughput log collection system using **Elastic Stack** and custom Rust tooling.
+- Developed a Rust-based log ingestion service, accelerating data processing by 60%.
+- Authored Python scripts for endpoint IoC report extraction and transformation, processing 1,000+ JSON records daily.
+- Defined REST API contracts and delivered sample code to external partners, ensuring seamless integration.
+- Oversaw QA workflows and feedback loops, maintaining service reliability and performance SLAs.
 
-### IT Consultant – Backend & Infrastructure
+### Daily Soft Co., LTD.
 
-Daily Soft Co., LTD. — Seoul, South Korea  
-Jan 2021 – June 2023
+**IT Consultant** | Seoul, South Korea  
+_January 2021 – June 2023_
 
-- Led PostgreSQL data migration for National Debt Management System; ensured zero-downtime cutover and data integrity.
-- Deployed containerized applications using Docker; configured Linux servers and SFTP environments for secure file transfers.
-- Designed integrated system architectures and wrote deployment scripts to automate environment provisioning.
-- Participated in code reviews and collaborated with cross-functional teams to align system implementations with business requirements.
+- Led cloud infrastructure design and vendor evaluation for multi-regional environments, advising on AWS solutions.
+- Deployed containerized applications using **Docker** and managed PostgreSQL migrations for a national financial system.
+- Designed and implemented ESB integration and database modeling for high-availability mission-critical applications.
+- Developed Python-based data analysis pipelines (Pandas, Jupyter) for regulatory reporting systems.
 
 ---
 
 ## Education
 
-**Bachelor of Science in Information & Communication Engineering**  
-Induk University — Seoul, South Korea  
-Mar 2012 – Feb 2019 | GPA 3.54/4.5
+**Induk University** | Bachelor of Science in Information & Communication Engineering  
+March 2012 – February 2019 | GPA: 3.54/4.5
+
+**Seoul Technical High School** | Diploma in Information Resources  
+February 2009 – February 2012
 
 ---
 
 ## Certifications
 
-- **Information Processing Engineer** — Korea Human Resources Development Service (May 2019)
-```
+- **Information Processing Engineer** | Korea Human Resources Development Service | May 2019
+
+---
+
+## Selected Personal Projects
+
+**AI Agent Collaboration System**
+
+- Building autonomous multi-agent workflows for news collection and summarization using Python and LLMs (CrewAI).
+- Implemented orchestration, inter-agent communication, and RAG pipelines for dynamic content curation.
+
+---
