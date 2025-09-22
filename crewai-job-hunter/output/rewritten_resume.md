@@ -1,102 +1,96 @@
+```markdown
 # Dongju Lee
 
-**Backend Python Software Engineer**  
+**Mid-Level Python Software Engineer**
+
 📧 spdlqj011@gmail.com | 📱 +82-10-3247-8760  
-🌐 Portfolio: https://www.notion.so/dongjulee/Portfolio-e0c6d62ecfba4c3996a920c69322afd3 | GitHub: github.com/dongju93  
-📍 Seoul, South Korea
+🌐 Portfolio: [Notion Portfolio](https://www.notion.so/dongjulee/Portfolio-e0c6d62ecfba4c3996a920c69322afd3) | GitHub: [github.com/dongju93](https://github.com/dongju93)  
+📍 Seoul, South Korea | Open to relocation/Hybrid work in Boston, MA
 
 ---
 
 ## Professional Summary
 
-Passionate Backend Developer with nearly 5 years of experience designing, developing, and maintaining Python-based services. Expert in FastAPI, Redis, PostgreSQL, and Elasticsearch integrations. Skilled in containerization and orchestration (Docker, Kubernetes) and building scalable, high-performance APIs. Proven ability to implement real-time data pipelines and automated CI/CD workflows. Eager to leverage cloud infrastructure, automation, and best practices to drive reliability and performance in AWS-powered environments.
+Passionate Backend Developer with 4+ years of experience designing, developing, and maintaining Python-based backend services in agile environments. Expertise in FastAPI, Django, PostgreSQL, and Redis for building scalable, high-performance RESTful APIs. Skilled in containerization with Docker, orchestration with Kubernetes, and implementing unit/integration testing. Strong collaborator in cross-functional teams, code reviews, and CI/CD practices.
 
 ---
 
-## Core Technical Skills
+## Technical Skills
 
-**Programming & Frameworks:**
-
-- Python, FastAPI, Django, RESTful API, GraphQL, gRPC, JWT Authentication
-
-**Databases & Caching:**
-
-- PostgreSQL, Redis, Elasticsearch, MySQL, MongoDB
-
-**Cloud & DevOps:**
-
-- Docker, Kubernetes, CI/CD (Jenkins), NGINX, Linux (Ubuntu), Working knowledge of AWS (EC2, RDS, S3)
-
-**Monitoring & Logging:**
-
-- Prometheus, Grafana, ELK Stack (Elasticsearch, Logstash, Kibana), Grafana Loki
-
-**Data Processing & Analytics:**
-
-- Polars, Pandas, ETL Pipelines, Real-time Streaming
+- **Languages & Frameworks:** Python, FastAPI, Django, RESTful APIs, GraphQL, gRPC
+- **Databases & Caching:** PostgreSQL, MariaDB, MySQL, MongoDB, Redis, Elasticsearch
+- **Containerization & DevOps:** Docker, Kubernetes, Jenkins, NGINX, Git
+- **Testing & Quality:** Pytest, MyPy, Pyright, Ruff, Pre-commit hooks
+- **Monitoring & Logging:** Prometheus, Grafana, InfluxDB, Grafana Loki
+- **Data Processing:** Polars, Pandas, ETL Pipelines
 
 ---
 
 ## Professional Experience
 
-### PINOLIKE Co., LTD.
+### Backend Engineer (Assistant Manager)
 
-**Backend/R&D Engineer (Assistant Manager)** | Seoul, South Korea  
+**PINOLIKE Co., LTD.** | Seoul, South Korea  
 _May 2024 – Present_
 
-- Architected and built high-performance async API servers using **FastAPI** with Pydantic, achieving <100ms response times.
-- Designed a multi-database backend: **PostgreSQL** for relational data, **Redis** for caching, and **Elasticsearch** for full-text search; boosted query throughput by 40%.
-- Developed async, event-driven pipelines with Redis Pub/Sub for real-time data ingestion and processing.
-- Integrated Go microservices via **gRPC**, optimizing cross-language interactions.
-- Implemented stateless JWT authentication with secure access/refresh token flows.
-- Containerized services with **Docker** and deployed on **Kubernetes**, enabling auto-scaling and fault tolerance.
-- Established CI/CD pipelines using **Jenkins**, with automated testing (Pytest), linting (Ruff), and type checks (Pyright).
-- Monitored application health and logs via **Prometheus**, **Grafana**, and **ELK Stack** to ensure 99.9% uptime.
+- Architected and maintained asynchronous backend services using Python and FastAPI with Pydantic for robust data validation.
+- Designed and implemented RESTful API endpoints with JWT-based authentication (Access/Refresh tokens) to support modular microservices.
+- Built multi-database architecture: PostgreSQL/MariaDB for transactional data, Redis for caching, and Elasticsearch for full-text search.
+- Developed event-driven communication via Redis Pub/Sub for real-time data processing workflows.
+- Containerized applications using Docker and orchestrated deployments on Kubernetes clusters.
+- Collaborated with frontend and DevOps teams on API design, integration, and deployment pipelines.
+- Wrote comprehensive unit and integration tests with Pytest; integrated static analysis tools (Ruff, Pyright) into a CI pipeline.
+- Participated in Agile ceremonies, peer code reviews, and maintained Git-based version control best practices.
+- Implemented monitoring and logging stacks (Prometheus, Grafana, InfluxDB, Grafana Loki) for service health and performance metrics.
 
-### CLUMELL Co., LTD.
+### Project Manager & Python Developer
 
-**Project Manager & Technical Lead** | Seoul, South Korea  
+**CLUMELL Co., LTD.** | Seoul, South Korea  
 _June 2023 – April 2024_
 
-- Led design and implementation of a high-throughput log collection system using **Elastic Stack** and custom Rust tooling.
-- Developed a Rust-based log ingestion service, accelerating data processing by 60%.
-- Authored Python scripts for endpoint IoC report extraction and transformation, processing 1,000+ JSON records daily.
-- Defined REST API contracts and delivered sample code to external partners, ensuring seamless integration.
-- Oversaw QA workflows and feedback loops, maintaining service reliability and performance SLAs.
+- Designed and developed a high-throughput log data processing pipeline in Python and Rust, handling 1,000+ JSON IoC reports per cycle.
+- Created RESTful data ingestion endpoints and sample integration code for external partners.
+- Built an Elastic Stack–based log collection system with Sysmon for endpoint monitoring.
+- Established QA and feedback workflows via Notion; coordinated sprints and technical handoffs between cross-functional teams.
 
-### Daily Soft Co., LTD.
+### IT Consultant & Infrastructure Engineer
 
-**IT Consultant** | Seoul, South Korea  
+**Daily Soft Co., LTD.** | Seoul, South Korea  
 _January 2021 – June 2023_
 
-- Led cloud infrastructure design and vendor evaluation for multi-regional environments, advising on AWS solutions.
-- Deployed containerized applications using **Docker** and managed PostgreSQL migrations for a national financial system.
-- Designed and implemented ESB integration and database modeling for high-availability mission-critical applications.
-- Developed Python-based data analysis pipelines (Pandas, Jupyter) for regulatory reporting systems.
+- Led PostgreSQL data migration and Docker-based deployments for the National Debt Management System.
+- Developed Python ETL scripts and Jupyter notebooks to analyze legal and financial datasets, enabling data-driven insights.
+- Designed and configured Linux-based application servers, including SFTP environments and network security settings.
+- Managed infrastructure vendor selection and cloud environment setup for government digital transformation projects.
 
 ---
 
 ## Education
 
-**Induk University** | Bachelor of Science in Information & Communication Engineering  
-March 2012 – February 2019 | GPA: 3.54/4.5
-
-**Seoul Technical High School** | Diploma in Information Resources  
-February 2009 – February 2012
+**Bachelor of Science in Information and Communication Engineering**  
+Induk University, Seoul, South Korea | _March 2012 – February 2019_  
+GPA: 3.54/4.5
 
 ---
 
 ## Certifications
 
-- **Information Processing Engineer** | Korea Human Resources Development Service | May 2019
+- **Information Processing Engineer** | Korea Human Resources Development Service | _May 2019_
 
 ---
 
-## Selected Personal Projects
+## Projects
 
-**AI Agent Collaboration System**
+**AI Agent Collaboration System** (CrewAI, Python, LLM)
 
-- Building autonomous multi-agent workflows for news collection and summarization using Python and LLMs (CrewAI).
-- Implemented orchestration, inter-agent communication, and RAG pipelines for dynamic content curation.
+- Building a multi-agent framework for automated news gathering, summarization, and curation.
+- Implementing RAG pipelines and autonomous workflows to enhance LLM-driven analysis.
 
 ---
+
+## Additional Information
+
+- Actively practice TDD and agile methodologies.
+- Continuous learner: track Python ecosystem updates, explore new libraries, and deepen cloud and containerization expertise.
+- Open to hybrid work and relocation to Boston, MA.
+```

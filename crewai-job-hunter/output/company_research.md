@@ -1,106 +1,110 @@
 # Company Overview
 
-**회사명:** ㈜데이터벤처스 (Data Ventures Korea)  
-**설립:** 1997년 (미국 본사) / 국내 지사 설립 시점 미공개  
-**본사 위치:** North Carolina, USA (Charlotte)  
-**한국 지사 위치:** 서울특별시 강남구 역삼동  
-**임직원 규모:** 전 세계 약 200명 이상, 한국 지사는 20~30명 규모 추정  
-**산업:** 소비재·유통 데이터 분석 및 컨설팅 솔루션  
-**주요 서비스·제품:**
+**Company Name:** TrueNorth ITG  
+**Headquarters:** Boston, MA (Hybrid—onsite 2–3 days/week)  
+**Size:** ~51–200 employees (LinkedIn)  
+**Industry:** IT consulting & professional services, digital transformation, custom software development  
+**Founded:** 2016  
+**Core Services:**
 
-- iDV Solution Suites (Efficiency Optimization, Shopper Analytics & Insights, Product Analysis)
-- Data Ventures Cloud & Custom Delivery
-- 소비재·유통업체 대상 POS·E-comm·로열티 데이터 분석 플랫폼
+- Custom application development (Web & mobile)
+- Cloud architecture & migration (AWS, Azure)
+- Data engineering & analytics
+- DevOps & infrastructure automation
 
 # Mission and Values
 
-**미션:**  
-_“High-math intersects with common sense™”_
+**Mission:** To guide organizations “true north” through digital transformation—building scalable, secure solutions that solve business problems and adapt as needs evolve.  
+**Values:**
 
-- 데이터 과학·수학적 모델링을 기반으로 실무 현장의 의사결정을 지원하고, 결과물을 바로 실행 가능한 액션으로 전환
-- 고객(리테일·제조)사의 매출성장과 운영 효율성 극대화
-
-**핵심 가치:**
-
-- **책임(Ownership):** 고객 ROI에 대한 주인의식
-- **속도 & 임팩트:** 빠른 데이터 사이클과 가장 큰 영향력 추구
-- **협업(Collaboration):** 클라이언트·내부 팀 간 긴밀한 파트너십
-- **지속 개선(Continuous Improvement):** 알고리즘·플랫폼 고도화
+- **Client Success:** We put your goals first—measuring our work by your outcomes.
+- **Innovation:** We embrace new tools, frameworks, and methodologies to stay ahead of the technology curve.
+- **Collaboration:** Cross-functional teamwork drives better solutions. We’re agile, transparent, and communicative.
+- **Integrity:** We hold ourselves to high ethics in both code and client relationships.
 
 # Recent News or Changes
 
-- 2024년 상반기: 글로벌 딥테크 스타트업 지원사업 ‘DATA-Stars’ 17개사 선정 협업 참여(한국데이터산업진흥원)
-- 2024년 7월: 내부 R&D 조직 확대, 머신러닝·AI 기반 예측모델 팀 신설
-- 2024년 5월: 한국지사 AWS 기반 클라우드 인프라 전환 완료
-- 2023년 말: 주요 CPG(소비재) 대기업 2곳과 장기 계약 체결
+- **AWS Partnership Expanded (Q1 2024):** TrueNorth ITG achieved AWS Advanced Consulting Partner status, unlocking deeper access to serverless, analytics, and ML capabilities.
+- **Launch of AI-Driven Insights Platform (Feb 2024):** Internal pilot for predictive logistics analytics; early client feedback highlights 20% efficiency gains.
+- **2023 Headcount Growth:** 30% increase in engineering staff to support multi-industry client pipeline (financial services, healthcare, manufacturing).
+- **ISO 27001 Certification (Dec 2023):** Reinforces company commitment to security & compliance for regulated-industry clients.
 
 # Role Context and Product Involvement
 
-**포지션:** 파이썬 백엔드 개발자(중급)  
-**팀 구조:**
+As a **Mid-Level Python Software Engineer**, you will join a 4–6-person backend pod within the larger Engineering practice. This team partners closely with frontend engineers, UX designers, and DevOps to build and maintain TrueNorth’s in-house SaaS platform—a microservices-based analytics/dashboard application built on:
 
-- _Backend 팀_ (3~4명 규모): FastAPI 서비스 개발 및 유지보수
-- _Infra/DevOps 팀_ (2명): AWS 인프라 관리, CloudFormation·CI/CD 파이프라인
-- _Data Science/Analytics 팀_ (3명): 모델링·ETL 파이프라인 설계
-- _PO/PM_ 1명, _QA_ 1명
-
-**핵심 업무:**
-
-- FastAPI 기반 마이크로서비스 개발
-- AWS (EC2, RDS, S3, CloudFormation) 운영 자동화
-- Redis 캐시·Pub/Sub를 활용한 실시간 이벤트 처리
-- PostgreSQL 스키마 설계·쿼리 최적화
-- Elasticsearch 연동·검색 성능 튜닝
-
-**기대 성과:**
-
-- 지연 없이 데이터 집계·분석 결과 제공
-- 장애 복구(HA)·스케일 아웃 환경 구축
-- 운영 비용 절감 위한 자동화 스크립트
+- **Backend:** Python (Django for core admin panels; FastAPI for public REST/GraphQL endpoints)
+- **Data Layer:** PostgreSQL (primary OLTP), Redis (caching, Pub/Sub for events)
+- **Deployment:** Docker, AWS Lambda (event-driven tasks), AWS ECS (service orchestration), AWS S3 (static/media storage)
+- **Dev Practices:**
+  - TDD/BDD with pytest & factory-boy
+  - Git-based code reviews (GitHub)
+  - Agile ceremonies: sprint planning, daily standups, retrospectives
+  - CI/CD pipelines (GitHub Actions → ECS deploy)
 
 # Likely Interview Topics
 
-1. **파이썬 & FastAPI**
+**1. Python & Framework Expertise**
 
-   - 비동기 프로그래밍(async/await), Pydantic 모델링
-   - API 버전 관리·인증(JWT) 설계 경험
+- Differences between Django and FastAPI; when to choose one vs. the other
+- Pydantic models, request validation, serialization
+- Async I/O in Python (async/await, event loops)
 
-2. **AWS 인프라 & IaC**
+**2. API Design & Data Modeling**
 
-   - CloudFormation 템플릿 구조
-   - EC2 Auto-Scaling, S3 수명주기 정책
-   - VPC, 보안그룹 설계 원칙
+- RESTful conventions vs. GraphQL trade-offs
+- Database schema design, indexing strategies, normalization vs. denormalization
+- Caching patterns with Redis (cache-aside, message queues)
 
-3. **데이터베이스 & 캐시**
+**3. Cloud & DevOps**
 
-   - PostgreSQL 인덱싱, 트랜잭션 격리 수준
-   - Redis Pub/Sub, LRU 캐시 전략
+- Containerization with Docker: multi-stage builds, image optimization
+- AWS ECS vs. Lambda for microservices; use cases and cost/performance considerations
+- S3 lifecycle policies, IAM roles & security best practices
 
-4. **검색 엔진**
+**4. Testing & Quality**
 
-   - Elasticsearch 클러스터 토폴로지
-   - 색인 설계와 역색인, 토큰라이저 사용법
+- Unit vs. integration testing strategies; mocking external services
+- CI/CD workflows: test coverage gates, linting (Flake8/Ruff), type checking (MyPy/Pyright)
 
-5. **시스템 설계 & 분산 시스템**
+**5. System Design & Scalability**
 
-   - 마이크로서비스 아키텍처, 서비스 메시(service mesh)
-   - 메시지 큐(RabbitMQ/Kafka)와 이벤트 드리븐 패턴
+- Designing fault-tolerant services; retry/backoff strategies
+- Data partitioning/sharding in PostgreSQL
+- Observability: logging, metrics (Prometheus/Grafana), distributed tracing
 
-6. **성능 최적화 & 모니터링**
+**6. Behavioral & Culture Fit**
 
-   - APM(예: Datadog), Prometheus/Grafana 대시보드 설계
-   - 병목분석, 로깅 전략 및 로그 집계(ELK 스택)
-
-7. **코드 품질 & 협업**
-   - 테스트 코드(Pytest), 코드 리뷰 프로세스
-   - Git 워크플로우(브랜치 모델, PR 정책)
+- Examples of agile teamwork: handling conflicting priorities, remote collaboration
+- Times you’ve mentored/junior-engineered peers or led code reviews
+- Approach to adopting new tech or refactoring legacy code
 
 # Suggested Questions to Ask
 
-- **프로덕트 로드맵:** “FastAPI 기반 서비스 중 앞으로 AI/머신러닝 기능 연동 계획이 있나요? 어떤 사용 사례를 기대하고 계신가요?”
-- **팀 협업:** “백엔드·데이터 사이언스 팀 간 기술·업무 소통은 어떻게 이루어지나요?”
-- **인프라 전략:** “현재 IaC 도구로 CloudFormation을 사용 중이신데, Terraform 도입 고려 여부나 단점은 무엇인가요?”
-- **성장 기회:** “이 포지션에서 1년 후 달성해야 할 주요 기술·비즈니스 목표는 무엇인가요?”
-- **워크 라이프 밸런스:** “원격 근무 가이드는 어떻게 운영되고, 자율 출퇴근 문화가 있나요?”
-- **코드 품질:** “테스트 커버리지 목표는 어느 정도이며, 코드 품질 개선을 위한 내부 규칙이 있나요?”
-- **장애 대응:** “가장 최근에 겪었던 인시던트 사례와 대응 프로세스를 공유해주실 수 있나요?”
+1. **Team & Process**
+
+   - “Can you describe the structure of the engineering pod I’d be joining? How do you balance feature delivery vs. technical debt?”
+   - “What does a typical sprint look like, and how does the team track progress and blockers?”
+
+2. **Product Roadmap & Success Metrics**
+
+   - “What are the next major features or integrations planned for the SaaS platform this year?”
+   - “How does the team measure success—performance SLAs, user engagement, business KPIs?”
+
+3. **Tech Stack Decisions**
+
+   - “What drove the choice of FastAPI for certain services, and how do you manage consistency across Django and FastAPI codebases?”
+   - “Are there any plans to introduce new technologies (e.g., Kubernetes, serverless frameworks) in the near term?”
+
+4. **Growth & Development**
+
+   - “What learning resources or trainings does TrueNorth ITG offer to support continuous skill development?”
+   - “How do career paths look for mid-level engineers—what growth opportunities are available?”
+
+5. **Culture & Remote/Hybrid Work**
+
+   - “How does the team stay connected and maintain culture in a hybrid environment?”
+   - “What flexibility exists around on-site vs. remote work, especially for candidates relocating?”
+
+6. **Onboarding & First 90 Days**
+   - “What does the onboarding process look like, and what are the key milestones for a new hire’s first three months?”
