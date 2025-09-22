@@ -194,10 +194,101 @@ crewai-job-hunter/
 2.  **`company_research.md`**: 지원할 기업에 대한 상세 분석 리포트.
 3.  **`interview_prep.md`**: 예상 질문, 전략, 어필 포인트 등이 담긴 맞춤형 면접 준비 가이드.
 
+## 🔧 문제 해결 과정 (Hallucination 이슈)
+
+### 원초적 문제
+
+초기 시스템에서 Job Matching Expert가 실제 웹 검색 결과 대신 **완전히 허위의 채용 공고 정보를 생성**하는 심각한 hallucination 문제가 발생했습니다. "ABC Technologies", "DEF Corp", "GHI Startup" 같은 가상의 회사명과 허위 URL을 만들어내어 전체 워크플로우가 신뢰할 수 없는 결과를 생성했습니다.
+
+### 문제 접근 방법
+
+1. **근본 원인 분석**: 실행 로그를 통해 job_search_agent가 web_search_tool을 전혀 사용하지 않고 있음을 확인
+2. **데이터 흐름 추적**: 각 태스크 간 데이터 전달 과정에서 허위 정보가 어디서 생성되는지 단계별 분석
+3. **구조적 문제 식별**: Job 모델의 과도한 복잡성(40+ 필드)이 LLM으로 하여금 누락된 정보를 허위로 채우도록 유도
+
+### 시도된 해결책들
+
+#### 1차 시도: Job 모델 단순화
+
+```python
+# 기존 40+ 필드 → 10개 핵심 필드로 축소
+class Job(BaseModel):
+    job_title: str
+    company_name: str
+    job_posting_url: str
+    job_summary: str
+    # 필수 필드만 유지하고 과도한 추론 필드 제거
+```
+
+#### 2차 시도: 강력한 검증 시스템 구축
+
+- Job Matching Agent에 web_search_tool 추가하여 URL 검증 기능 구현
+- 매칭 점수에 0점(검증 실패) 추가로 허위 정보 필터링
+- CRITICAL REQUIREMENTS와 FORBIDDEN ACTIONS로 상세한 지침 제공
+
+### 추가 발견된 문제들
+
+2차 시도 후 새로운 문제들이 드러났습니다:
+
+1. **도구 사용 완전 중단**: 과도하게 복잡한 프롬프트로 인해 에이전트가 아예 web_search_tool을 사용하지 않음
+2. **구조화된 출력 실패**: 복잡한 검증 로직이 Pydantic 모델 출력을 방해하여 빈 배열만 반환
+3. **o4-mini 모델의 한계**: 작은 모델이 복잡한 다단계 지시사항을 처리하지 못함
+
+### 최종 해결 방법
+
+#### 균형 잡힌 프롬프트 설계
+
+```yaml
+# 복잡한 지침 제거, 핵심만 유지
+job_extraction_task:
+  description: >
+    Search for {level} level {position} jobs in {location} using web search.
+
+    Use the Web Search Tool to find real job postings from job boards and company career pages.
+    Only extract information from actual search results - do not create or fabricate any job listings.
+```
+
+#### 도구 사용 가이드 개선
+
+```python
+@tool
+def web_search_tool(query: str) -> list[WebSearchResults] | str:
+    """
+    Use this tool to find real job postings from job boards, company career pages.
+    Be specific with your search queries to get better results.
+
+    Examples:
+        web_search_tool("Python backend engineer jobs Seoul Korea")
+    """
+```
+
+#### 핵심 보호 장치 유지
+
+- 허위 정보 생성 금지 원칙 유지
+- 웹 검색 도구 사용 필수화
+- 실제 검색 결과만 추출하도록 제한
+
+### 결과
+
+최종 해결책 적용 후:
+
+- ✅ **실제 웹 검색 수행**: 에이전트가 web_search_tool을 적극 활용
+- ✅ **진짜 채용 공고 발견**: 실제 기업(㈜데이터벤처스)의 정확한 정보 추출
+- ✅ **구조화된 출력 복원**: JobList, RankedJobList, ChosenJob 모델 정상 작동
+- ✅ **전체 워크플로우 성공**: 이력서 최적화부터 면접 준비까지 완전한 파이프라인 동작
+
+### 핵심 교훈
+
+1. **프롬프트 복잡성과 성능의 반비례**: 과도한 지침이 오히려 성능을 저해
+2. **모델별 최적화 필요성**: o4-mini 같은 경량 모델은 간결하고 명확한 지시사항 선호
+3. **도구 사용 패턴의 중요성**: docstring과 예시가 실제 도구 활용도에 직접적 영향
+4. **점진적 문제 해결**: 한 번에 모든 문제를 해결하려 하지 말고 단계적 접근 필요
+
 ## 📚 학습 포인트
 
 - **복잡한 워크플로우 설계**: 5개의 에이전트와 6개의 태스크를 비선형적으로 연결하여 실제 문제 해결에 가까운 시스템 구축.
-- **Pydantic을 활용한 LLM 출력 제어**: 수십 개의 상세 필드를 가진 Pydantic 모델을 `output_pydantic`으로 지정하여, LLM의 출력을 안정적이고 구조화된 데이터로 변환.
+- **Pydantic을 활용한 LLM 출력 제어**: 핵심 필드만 포함한 간결한 Pydantic 모델을 `output_pydantic`으로 지정하여, LLM의 출력을 안정적이고 구조화된 데이터로 변환.
 - **컨텍스트 기반 태스크 실행**: 여러 선행 태스크의 결과물을 `context`로 받아 후속 태스크를 수행하는 고급 CrewAI 패턴 활용.
 - **실용적인 결과물 생성**: 단순 정보 조회를 넘어, 실제 구직 활동에 직접 사용할 수 있는 구체적인 결과물(이력서, 분석 리포트, 면접 자료)을 생성.
 - **모듈화된 설계**: `agents.yaml`, `tasks.yaml`을 통해 에이전트와 태스크의 로직을 분리하여 재사용성과 확장성을 확보.
+- **LLM Hallucination 방지**: 실제 웹 검색 도구 활용과 간결한 프롬프트 설계를 통해 허위 정보 생성 완전 차단.
