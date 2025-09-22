@@ -273,7 +273,7 @@ def web_search_tool(query: str) -> list[WebSearchResults] | str:
 최종 해결책 적용 후:
 
 - ✅ **실제 웹 검색 수행**: 에이전트가 web_search_tool을 적극 활용
-- ✅ **진짜 채용 공고 발견**: 실제 기업(㈜데이터벤처스)의 정확한 정보 추출
+- ✅ **진짜 채용 공고 발견**: 실제 기업(True North ITG)의 정확한 정보 추출
 - ✅ **구조화된 출력 복원**: JobList, RankedJobList, ChosenJob 모델 정상 작동
 - ✅ **전체 워크플로우 성공**: 이력서 최적화부터 면접 준비까지 완전한 파이프라인 동작
 
