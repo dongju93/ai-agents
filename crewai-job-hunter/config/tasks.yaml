@@ -1,52 +1,48 @@
 job_extraction_task:
   description: >
-    Find and extract {level} level {position} jobs in {location}.
+    Search for {level} level {position} jobs in {location} using web search.
 
-    Steps include:
-    1. Use Web Search Tool to search for {level} level {position} jobs in {location}.
-    2. Extract the job listings from the search results.
-    3. Filter out job listings that are not {level} level {position} jobs in {location}.
+    Use the Web Search Tool to find real job postings from job boards and company career pages.
+    Only extract information from actual search results - do not create or fabricate any job listings.
+
+    If you find real jobs, extract:
+    - Job title, company name, and location
+    - Job posting URL (must be real and from search results)
+    - Job description/summary
+    - Required technologies and experience level
+    - Employment type and compensation if available
+
+    If no real jobs are found, return an empty jobs array.
   expected_output: >
-    A JSON object matching the `JobList` schema.
+    A JSON object matching the JobList schema with real jobs found via web search.
   agent: job_search_agent
 
 job_matching_task:
   description: >
-    You are an expert in career matching.
+    Evaluate how well each job aligns with the user's resume and preferences.
 
-    Given a list of extracted jobs (JobList) and the user's resume, evaluate how well each job aligns with the user's:
-    - Tech stack
-    - Role level
-    - Industry and company size preferences
-    - Remote/work flexibility
-    - Contract type
+    For each job in the JobList, analyze the match based on:
+    - Technical skills and experience level
+    - Remote work preferences and location
+    - Industry and company preferences
     - Salary expectations
-    - Keywords and disqualifiers in the resume
 
-    For each job, assign a `match_score` from 1 (poor fit) to 5 (perfect fit), and explain your reasoning.
-
-    Append the `match_score` and a `reason` field to each job in the list.
-
-    Keep all original job fields intact. Do not alter or filter out any jobs.
+    Assign a match_score from 1 (poor fit) to 5 (perfect fit) and provide reasoning.
+    Keep all original job fields intact.
   expected_output: >
-    A JSON object matching the original `Job` schema, with two additional fields per job:
-    - match_score: integer from 1 to 5
-    - reason: a short explanation for the score
+    A JSON object matching the RankedJobList schema with match scores and reasoning.
   agent: job_matching_agent
 
 job_selection_task:
   description: >
-    You are an expert in job selection.
+    Select the best job from the ranked list based on match scores and reasoning.
 
-    Given a list of jobs that each contain a `match_score` and a `reason` field (RankedJobList), your task is to:
-    1. Analyze the `match_score` and reasons to determine the **best-fit job** for the user.
-    2. Select the single best job that aligns most closely with the user's preferences, skills, and goals.
-    3. Justify your choice in a concise `reason` field based on resume-job alignment.
-    4. Set the `selected` field to `true` for the top job and `false` for all others.
+    Choose the job that best aligns with the user's skills, preferences, and career goals.
+    Justify your selection based on the match scores and resume alignment.
 
-    Do not change the content of any original job fields (e.g., job_title, company_name, etc.).
+    Do not change any original job fields.
   expected_output: >
-    A JSON object matching the `ChosenJob` schema of the selected job.
+    A JSON object matching the ChosenJob schema with the selected job and reasoning.
   agent: job_matching_agent
 
 resume_rewriting_task:
