@@ -9,11 +9,11 @@
 - **[warm-up](./warm-up/)** - OpenAI API를 활용한 기초 실습
 - **[crewai-news-reader](./crewai-news-reader/)** - CrewAI 프레임워크를 활용한 AI 기반 뉴스 수집, 요약 및 큐레이션 시스템
 - **[crewai-job-hunter](./crewai-job-hunter/)** - CrewAI 프레임워크를 활용한 AI 채용 공고 탐색 및 지원서 관리 에이전트
+- **[crewai-content-pipeline](./crewai-content-pipeline/)** - CrewAI 프레임워크를 활용한 컨텐츠 생성 파이프라인 에이전트
 
 ### 향후 추가 예정 프로젝트
 
 - **[OpenAI Agents SDK](https://openai.github.io/openai-agents-python/)** - OpenAI Agents SDK를 활용한 고급 에이전트 구현
-- **[crew.ai](https://www.crewai.com/)** - CrewAI의 고급 기능 및 복잡한 워크플로우 구현
 - **[Google Agent Development Kit](https://google.github.io/adk-docs/)** - Google Agent SDK를 활용한 에이전트 개발
 - **[LangGraph](https://www.langchain.com/langgraph)** - LangGraph를 활용한 복잡한 에이전트 워크플로우
 
