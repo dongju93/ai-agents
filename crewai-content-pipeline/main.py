@@ -1,82 +1,107 @@
-from typing import Literal
+from enum import Enum, StrEnum
+from typing import Annotated, ClassVar
 
-from crewai.flow.flow import Flow, and_, listen, router, start
-from pydantic import BaseModel
-
-
-class FlowState(BaseModel):  # 상태 모델 (struct)
-    flow_id: int = 0
-    flow_state: Literal["initial", "running", "completed"] = "initial"
+from crewai.flow.flow import Flow, listen, or_, router, start
+from pydantic import BaseModel, Field
 
 
-class MyFirstFlow(Flow[FlowState]):
-    """
-    Flow 는 여러개의 method(function) 를 지닌 class
-    언제 method 를 실행 할지, method 의 event 를 감지 할지 정할 수 있음
-    """
+class ContentType(StrEnum):
+    TWEET = "tweet"
+    BLOG = "blog"
+    LINKEDIN = "linkedin"
+
+
+class ContentLength(int, Enum):
+    SHORT = 150
+    MEDIUM = 500
+    LONG = 800
+
+
+class ContentCreateEvent(StrEnum):
+    CREATE_TWEET = "create_tweet"
+    CREATE_BLOG = "create_blog"
+    CREATE_LINKEDIN = "create_linkedin"
+
+
+class ContentPipelineState(BaseModel):
+    # user input
+    content_type: Annotated[
+        ContentType, Field(description="Type of content to generate")
+    ] = ContentType.TWEET
+    topic: Annotated[str, Field(description="Topic of the content to generate")] = ""
+
+    # content maximum size
+    max_length: Annotated[
+        int, Field(description="Maximum length of the content to generate")
+    ] = 0
+
+
+class ContentPipelineFlow(Flow[ContentPipelineState]):
+    INVALID_CONTENT_TYPE_MESSAGE: ClassVar[str] = "Invalid content type"
 
     @start()
-    def first(self) -> None:
-        self.state.flow_id = 1  # 메서드 간에 데이터를 공유하고, 실행 상태를 추적
-        self.state.flow_state = "initial"
-        print(self.state.flow_id)
-        print(self.state.flow_state)
-        print("Hello")
+    def init_content_pipeline(self) -> None:
+        # strict content type
+        if self.state.content_type not in [
+            ContentType.TWEET,
+            ContentType.BLOG,
+            ContentType.LINKEDIN,
+        ]:
+            raise ValueError(self.INVALID_CONTENT_TYPE_MESSAGE)
 
-    @listen(first)  # first 이벤트 종료 감지
-    def second(self) -> None:
-        self.state.flow_id = 2
-        self.state.flow_state = "running"
-        print(self.state.flow_id)
-        print(self.state.flow_state)
-        print("World")
+        if self.state.topic == "":
+            raise ValueError("Topic is required")
 
-    @listen(first)
-    def third(self) -> None:
-        self.state.flow_id = 3
-        self.state.flow_state = "running"
-        print(self.state.flow_id)
-        print(self.state.flow_state)
-        print("Again")
-
-    @listen(and_(second, third))  # and_ 두 이벤트 모두 종료 감지
-    def fourth(self) -> None:
-        self.state.flow_id = 4
-        self.state.flow_state = "running"
-        print(self.state.flow_id)
-        print(self.state.flow_state)
-        print("😀")
-
-    @router(fourth)
-    def fifth(self) -> str:
-        self.state.flow_id = 5
-        self.state.flow_state = "running"
-        print(self.state.flow_id)
-        print(self.state.flow_state)
-        a = 2
-        if a == 2:
-            return "even"  # 이벤트를 발생(emit) 시킴
+        if self.state.content_type == ContentType.TWEET:
+            self.state.max_length = ContentLength.SHORT
+        elif self.state.content_type == ContentType.BLOG:
+            self.state.max_length = ContentLength.LONG
+        elif self.state.content_type == ContentType.LINKEDIN:
+            self.state.max_length = ContentLength.MEDIUM
         else:
-            return "odd"
+            raise ValueError(self.INVALID_CONTENT_TYPE_MESSAGE)
 
-    @listen("even")  # 함수가 발생한 이벤트를 감지
-    def even_listener(self) -> None:
-        self.state.flow_id = 6
-        self.state.flow_state = "completed"
-        print(self.state.flow_id)
-        print(self.state.flow_state)
-        print("짝수입니다.")
+    @listen(init_content_pipeline)
+    def conduct_research(self):
+        print(f"Conducting research on topic: {self.state.topic}")
+        return True
 
-    @listen("odd")
-    def odd_listener(self) -> None:
-        self.state.flow_id = 7
-        self.state.flow_state = "completed"
-        print(self.state.flow_id)
-        print(self.state.flow_state)
-        print("홀수입니다.")
+    @router(conduct_research)
+    def route_content_creation(self) -> str:
+        if self.state.content_type == ContentType.TWEET:
+            return "create_tweet"  # Enum not working in here
+        elif self.state.content_type == ContentType.BLOG:
+            return "create_blog"
+        elif self.state.content_type == ContentType.LINKEDIN:
+            return "create_linkedin"
+        else:
+            raise ValueError(self.INVALID_CONTENT_TYPE_MESSAGE)
+
+    @listen(ContentCreateEvent.CREATE_TWEET)
+    def handle_create_tweet(self):
+        print("Handling event: create_tweet")
+
+    @listen(ContentCreateEvent.CREATE_BLOG)
+    def handle_create_blog(self):
+        print("Handling event: create_blog")
+
+    @listen(ContentCreateEvent.CREATE_LINKEDIN)
+    def handle_create_linkedin(self):
+        print("Handling event: create_linkedin")
+
+    @listen(handle_create_blog)
+    def check_seo(self):
+        print("Performing SEO check for blog content")
+
+    @listen(or_(handle_create_linkedin, handle_create_tweet))
+    def check_viral(self):
+        print("Performing viral content check for tweet or linkedin content")
+
+    @listen(or_(check_seo, check_viral))
+    def finalize_content_creation(self):
+        print("Finalizing content creation process")
 
 
-flow = MyFirstFlow()
+flow = ContentPipelineFlow()
 
 flow.plot()
-flow.kickoff()
