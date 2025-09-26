@@ -34,6 +34,16 @@ class ContentPipelineState(BaseModel):
     max_length: Annotated[
         int, Field(description="Maximum length of the content to generate")
     ] = 0
+    # content quality
+    score: Annotated[
+        float, Field(description="Quality score of the generated content")
+    ] = 0.0
+    # content
+    tweet_content: Annotated[str, Field(description="Generated tweet content")] = ""
+    blog_content: Annotated[str, Field(description="Generated blog content")] = ""
+    linkedin_content: Annotated[
+        str, Field(description="Generated linkedin content")
+    ] = ""
 
 
 class ContentPipelineFlow(Flow[ContentPipelineState]):
@@ -77,15 +87,16 @@ class ContentPipelineFlow(Flow[ContentPipelineState]):
         else:
             raise ValueError(self.INVALID_CONTENT_TYPE_MESSAGE)
 
-    @listen(ContentCreateEvent.CREATE_TWEET)
+    @listen(or_(ContentCreateEvent.CREATE_TWEET, "reproduce_tweet"))
     def handle_create_tweet(self):
+        # if listen "reproduce_tweet" event, improve existing content otherwise create new content
         print("Handling event: create_tweet")
 
-    @listen(ContentCreateEvent.CREATE_BLOG)
+    @listen(or_(ContentCreateEvent.CREATE_BLOG, "reproduce_blog"))
     def handle_create_blog(self):
         print("Handling event: create_blog")
 
-    @listen(ContentCreateEvent.CREATE_LINKEDIN)
+    @listen(or_(ContentCreateEvent.CREATE_LINKEDIN, "reproduce_linkedin"))
     def handle_create_linkedin(self):
         print("Handling event: create_linkedin")
 
@@ -97,7 +108,21 @@ class ContentPipelineFlow(Flow[ContentPipelineState]):
     def check_viral(self):
         print("Performing viral content check for tweet or linkedin content")
 
-    @listen(or_(check_seo, check_viral))
+    @router(or_(check_seo, check_viral))
+    def content_quality_check(self):
+        content_type = self.state.content_type
+        if self.state.score >= 8.0:
+            print("Content quality is good, proceed finalization")
+        else:
+            match content_type:
+                case ContentType.TWEET:
+                    return "reproduce_tweet"
+                case ContentType.BLOG:
+                    return "reproduce_blog"
+                case ContentType.LINKEDIN:
+                    return "reproduce_linkedin"
+
+    @listen(content_quality_check)
     def finalize_content_creation(self):
         print("Finalizing content creation process")
 
