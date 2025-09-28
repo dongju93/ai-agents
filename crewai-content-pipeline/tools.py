@@ -22,22 +22,22 @@ class WebSearchResults(TypedDict):
 @tool
 def web_search_tool(query: str) -> list[WebSearchResults] | str:
     """
-    Searches the web for job postings and company information.
+    Searches the web for general information.
 
-    Use this tool to find real job postings from job boards, company career pages, and recruitment sites.
+    Use this tool to find information from various web sources.
     Be specific with your search queries to get better results.
 
     Args:
-        query (str): Search query string. For jobs, include role, location, and experience level.
+        query (str): Search query string.
 
     Returns:
         list[WebSearchResults] | str: List of search results with title, url, and content.
         Returns error string if search fails.
 
     Examples:
-        web_search_tool("Python backend engineer jobs Seoul Korea")
-        web_search_tool("software developer wanted.co.kr")
-        web_search_tool("Samsung careers backend developer")
+        web_search_tool("latest news on AI")
+        web_search_tool("Python tutorials")
+        web_search_tool("weather in Seoul")
     """
     firecrawl = Firecrawl(api_key=FIRECRAWL_API_KEY)
     results: SearchData = firecrawl.search(
