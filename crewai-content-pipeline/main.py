@@ -1,8 +1,33 @@
 from enum import Enum, StrEnum
 from typing import Annotated, ClassVar
 
+from crewai import LLM, Agent
 from crewai.flow.flow import Flow, listen, or_, router, start
 from pydantic import BaseModel, Field
+
+from tools import web_search_tool
+
+
+class BlogPost(BaseModel):
+    title: str
+    subtitle: str
+    sections: list[str]
+
+
+class Tweet(BaseModel):
+    content: str
+    hashtags: str
+
+
+class LinkedInPost(BaseModel):
+    hook: str
+    content: str
+    call_to_action: str
+
+
+class Score(BaseModel):
+    score: int = 0
+    reason: str = ""
 
 
 class ContentType(StrEnum):
@@ -36,14 +61,19 @@ class ContentPipelineState(BaseModel):
     ] = 0
     # content quality
     score: Annotated[
-        float, Field(description="Quality score of the generated content")
-    ] = 0.0
+        Score | None, Field(description="Quality score of the generated content")
+    ] = None
     # content
-    tweet_content: Annotated[str, Field(description="Generated tweet content")] = ""
-    blog_content: Annotated[str, Field(description="Generated blog content")] = ""
-    linkedin_content: Annotated[
-        str, Field(description="Generated linkedin content")
-    ] = ""
+    tweet: Annotated[Tweet | None, Field(description="Generated tweet content")] = None
+    blog_post: Annotated[
+        BlogPost | None, Field(description="Generated blog content")
+    ] = None
+    linkedin_post: Annotated[
+        LinkedInPost | None, Field(description="Generated linkedin content")
+    ] = None
+
+    # tools
+    research: str = ""
 
 
 class ContentPipelineFlow(Flow[ContentPipelineState]):
@@ -73,8 +103,16 @@ class ContentPipelineFlow(Flow[ContentPipelineState]):
 
     @listen(init_content_pipeline)
     def conduct_research(self):
-        print(f"Conducting research on topic: {self.state.topic}")
-        return True
+        researcher: Agent = Agent(
+            role="Head Researcher",
+            backstory="You're like a digital detective who loves digging up fascinating facts and insights. You have a knack for finding the good stuff that others miss.",
+            goal=f"Find the most interesting and useful info about {self.state.topic}",
+            tools=[web_search_tool],  # type: ignore
+        )
+
+        self.state.research = researcher.kickoff(  # type: ignore
+            f"Find the most interesting and useful info about {self.state.topic}"
+        )
 
     @router(conduct_research)
     def route_content_creation(self) -> str:
@@ -89,8 +127,39 @@ class ContentPipelineFlow(Flow[ContentPipelineState]):
 
     @listen(or_(ContentCreateEvent.CREATE_TWEET, "reproduce_tweet"))
     def handle_create_tweet(self):
+        llm = LLM(model="openai/o4-mini", response_format=Tweet)
+
         # if listen "reproduce_tweet" event, improve existing content otherwise create new content
-        print("Handling event: create_tweet")
+        if self.state.tweet is None:
+            # create content
+            self.state.tweet = llm.call(  # type: ignore
+                f"""
+                Make a tweet on the topic {self.state.topic} using the following research:
+
+                <research>
+                {self.state.research}
+                </research>
+                """
+            )
+        else:
+            # improve content
+            self.state.tweet = llm.call(  # type: ignore
+                f"""
+                You wrote this tweet on {self.state.topic}, but it does not viral score because of {self.state.score.reason} 
+                
+                Improve it.
+
+                <tweet>
+                {self.state.tweet.model_dump_json()}
+                </tweet>
+
+                Use the following research.
+
+                <research>
+                {self.state.research}
+                </research>
+                """
+            )
 
     @listen(or_(ContentCreateEvent.CREATE_BLOG, "reproduce_blog"))
     def handle_create_blog(self):
@@ -100,18 +169,21 @@ class ContentPipelineFlow(Flow[ContentPipelineState]):
     def handle_create_linkedin(self):
         print("Handling event: create_linkedin")
 
-    @listen(handle_create_blog)
+    @listen(or_(handle_create_linkedin, handle_create_blog))
     def check_seo(self):
         print("Performing SEO check for blog content")
 
-    @listen(or_(handle_create_linkedin, handle_create_tweet))
+    @listen(handle_create_tweet)
     def check_viral(self):
-        print("Performing viral content check for tweet or linkedin content")
+        print(self.state.tweet)
+        print("==========")
+        print(self.state.research)
+        print("Performing virality check for tweet content")
 
     @router(or_(check_seo, check_viral))
     def content_quality_check(self):
         content_type = self.state.content_type
-        if self.state.score >= 8.0:
+        if self.state.score.score >= 8.0:
             print("Content quality is good, proceed finalization")
         else:
             match content_type:
@@ -127,6 +199,11 @@ class ContentPipelineFlow(Flow[ContentPipelineState]):
         print("Finalizing content creation process")
 
 
-flow = ContentPipelineFlow()
+flow = ContentPipelineFlow().kickoff(
+    inputs={
+        "content_type": ContentType.TWEET,
+        "topic": "The future of AI in healthcare",
+    }
+)
 
-flow.plot()
+# flow.plot()
