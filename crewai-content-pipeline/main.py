@@ -1,11 +1,15 @@
+from datetime import datetime
 from enum import Enum, StrEnum
+from pathlib import Path
 from typing import Annotated, ClassVar
 
 from crewai import LLM, Agent
 from crewai.flow.flow import Flow, listen, or_, router, start
 from pydantic import BaseModel, Field
 
+from seo_crew import Score, SeoCrew
 from tools import web_search_tool
+from virality_crew import ViralityCrew
 
 
 class BlogPost(BaseModel):
@@ -23,11 +27,6 @@ class LinkedInPost(BaseModel):
     hook: str
     content: str
     call_to_action: str
-
-
-class Score(BaseModel):
-    score: int = 0
-    reason: str = ""
 
 
 class ContentType(StrEnum):
@@ -61,8 +60,8 @@ class ContentPipelineState(BaseModel):
     ] = 0
     # content quality
     score: Annotated[
-        Score | None, Field(description="Quality score of the generated content")
-    ] = None
+        Score, Field(description="Quality score of the generated content")
+    ] = Score()
     # content
     tweet: Annotated[Tweet | None, Field(description="Generated tweet content")] = None
     blog_post: Annotated[
@@ -132,7 +131,7 @@ class ContentPipelineFlow(Flow[ContentPipelineState]):
         # if listen "reproduce_tweet" event, improve existing content otherwise create new content
         if self.state.tweet is None:
             # create content
-            self.state.tweet = llm.call(  # type: ignore
+            llm_response = llm.call(
                 f"""
                 Make a tweet on the topic {self.state.topic} using the following research:
 
@@ -141,11 +140,12 @@ class ContentPipelineFlow(Flow[ContentPipelineState]):
                 </research>
                 """
             )
+
         else:
             # improve content
-            self.state.tweet = llm.call(  # type: ignore
+            llm_response = llm.call(  # type: ignore
                 f"""
-                You wrote this tweet on {self.state.topic}, but it does not viral score because of {self.state.score.reason} 
+                You wrote this tweet on {self.state.topic}, but it does not have a good viral score because of {self.state.score.reason} 
                 
                 Improve it.
 
@@ -161,48 +161,181 @@ class ContentPipelineFlow(Flow[ContentPipelineState]):
                 """
             )
 
+        self.state.tweet = Tweet.model_validate_json(llm_response)
+
     @listen(or_(ContentCreateEvent.CREATE_BLOG, "reproduce_blog"))
     def handle_create_blog(self):
-        print("Handling event: create_blog")
+        llm = LLM(model="openai/o4-mini", response_format=BlogPost)
+
+        if self.state.blog_post is None:
+            # create content
+            llm_response = llm.call(  # type: ignore
+                f"""
+                Make a blog post on the topic {self.state.topic} using the following research:
+
+                <research>
+                {self.state.research}
+                </research>
+                """
+            )
+        else:
+            # improve content
+            llm_response = llm.call(  # type: ignore
+                f"""
+                You wrote this blog post on {self.state.topic}, but it does not good SEO score because of {self.state.score.reason} 
+                
+                Improve it.
+
+                <blog_post>
+                {self.state.blog_post.model_dump_json()}
+                </blog_post>
+
+                Use the following research.
+
+                <research>
+                {self.state.research}
+                </research>
+                """
+            )
+
+        self.state.blog_post = BlogPost.model_validate_json(llm_response)
 
     @listen(or_(ContentCreateEvent.CREATE_LINKEDIN, "reproduce_linkedin"))
     def handle_create_linkedin(self):
-        print("Handling event: create_linkedin")
+        llm = LLM(model="openai/o4-mini", response_format=LinkedInPost)
 
-    @listen(or_(handle_create_linkedin, handle_create_blog))
+        if self.state.linkedin_post is None:
+            # create content
+            llm_response = llm.call(  # type: ignore
+                f"""
+                Make a linkedin post on the topic {self.state.topic} using the following research:
+
+                <research>
+                {self.state.research}
+                </research>
+                """
+            )
+
+        else:
+            # improve content
+            llm_response = llm.call(  # type: ignore
+                f"""
+                You wrote this linkedin post on {self.state.topic}, but it does not have a good viral score because of {self.state.score.reason} 
+                
+                Improve it.
+
+                <linkedin_post>
+                {self.state.linkedin_post.model_dump_json()}
+                </linkedin_post>
+
+                Use the following research.
+
+                <research>
+                {self.state.research}
+                </research>
+                """
+            )
+
+        self.state.linkedin_post = LinkedInPost.model_validate_json(llm_response)
+
+    @listen(handle_create_blog)
     def check_seo(self):
-        print("Performing SEO check for blog content")
+        eval_seo = (
+            SeoCrew()
+            .crew()
+            .kickoff(
+                inputs={
+                    "topic": self.state.topic,
+                    "blog_post": self.state.blog_post.model_dump_json(),  # type: ignore
+                }
+            )
+        )
 
-    @listen(handle_create_tweet)
+        self.state.score = eval_seo.pydantic  # type: ignore
+
+    @listen(or_(handle_create_linkedin, handle_create_tweet))
     def check_viral(self):
-        print(self.state.tweet)
-        print("==========")
-        print(self.state.research)
-        print("Performing virality check for tweet content")
+        eval_viral = (
+            ViralityCrew()
+            .crew()
+            .kickoff(
+                inputs={
+                    "topic": self.state.topic,
+                    "content_type": self.state.content_type,
+                    "content": self.state.tweet.model_dump_json()  # type: ignore
+                    if self.state.content_type == ContentType.TWEET
+                    else self.state.linkedin_post.model_dump_json(),  # type: ignore
+                }
+            )
+        )
 
+        self.state.score = eval_viral.pydantic  # type: ignore
+
+    # refinement loop
     @router(or_(check_seo, check_viral))
     def content_quality_check(self):
         content_type = self.state.content_type
-        if self.state.score.score >= 8.0:
-            print("Content quality is good, proceed finalization")
-        else:
-            match content_type:
-                case ContentType.TWEET:
-                    return "reproduce_tweet"
-                case ContentType.BLOG:
-                    return "reproduce_blog"
-                case ContentType.LINKEDIN:
-                    return "reproduce_linkedin"
+        score = self.state.score
 
-    @listen(content_quality_check)
+        if score.score >= 6:
+            print("Content quality is good, proceed finalization")
+            return "finalize"
+        else:
+            print("Content quality is low, need to improve")
+            if content_type == ContentType.TWEET:
+                return "reproduce_tweet"
+            elif content_type == ContentType.BLOG:
+                return "reproduce_blog"
+            elif content_type == ContentType.LINKEDIN:
+                return "reproduce_linkedin"
+
+    @listen("finalize")
     def finalize_content_creation(self):
         print("Finalizing content creation process")
+
+        # Create timestamp for filename
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"{self.state.content_type}_{timestamp}.txt"
+
+        # Get the content based on content type
+        content = ""
+        if self.state.content_type == ContentType.TWEET and self.state.tweet:
+            content = f"Content: {self.state.tweet.content}\nHashtags: {self.state.tweet.hashtags}"
+        elif self.state.content_type == ContentType.BLOG and self.state.blog_post:
+            content = (
+                f"Title: {self.state.blog_post.title}\nSubtitle: {self.state.blog_post.subtitle}\nSections:\n"
+                + "\n".join(f"- {section}" for section in self.state.blog_post.sections)
+            )
+        elif (
+            self.state.content_type == ContentType.LINKEDIN and self.state.linkedin_post
+        ):
+            content = f"Hook: {self.state.linkedin_post.hook}\nContent: {self.state.linkedin_post.content}\nCall to Action: {self.state.linkedin_post.call_to_action}"
+
+        # Add metadata
+        file_content = f"""
+            Topic: {self.state.topic}
+            Content Type: {self.state.content_type}
+            Quality Score: {self.state.score.score}/10
+            Score Reason: {self.state.score.reason}
+            Generated At: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+
+            {content}
+            """
+
+        # Save to file
+        output_path = Path("output") / filename
+        output_path.parent.mkdir(exist_ok=True)
+
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(file_content)
+
+        print(f"Content saved to: {output_path}")
 
 
 flow = ContentPipelineFlow().kickoff(
     inputs={
         "content_type": ContentType.TWEET,
-        "topic": "The future of AI in healthcare",
+        "topic": "Chainsaw Man: Reze Arc is fire",
     }
 )
 
