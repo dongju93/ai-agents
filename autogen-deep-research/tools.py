@@ -74,3 +74,22 @@ def web_search_tool(query: str) -> list[WebSearchResults] | str:
         )
 
     return searched_chunks
+
+
+def save_report_to_markdown(content: str) -> str:
+    """
+    Saves the given content to a markdown file.
+
+    Args:
+        content (str): The content to be saved in markdown format.
+
+    Returns:
+        str: The filename of the saved markdown file.
+
+    Examples:
+        save_report_to_markdown("# Report Title\nThis is the report content.")
+    """
+    filename: str = "report.md"
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write(content)
+    return filename
