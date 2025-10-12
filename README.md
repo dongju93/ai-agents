@@ -7,9 +7,10 @@
 ### 현재 구현된 프로젝트
 
 - **[warm-up](./warm-up/)** - OpenAI API를 활용한 기초 실습
-- **[crewai-news-reader](./crewai-news-reader/)** - CrewAI 프레임워크를 활용한 AI 기반 뉴스 수집, 요약 및 큐레이션 시스템
-- **[crewai-job-hunter](./crewai-job-hunter/)** - CrewAI 프레임워크를 활용한 AI 채용 공고 탐색 및 지원서 관리 에이전트
-- **[crewai-content-pipeline](./crewai-content-pipeline/)** - CrewAI 프레임워크를 활용한 컨텐츠 생성 파이프라인 에이전트
+- **[autogen-deep-research](./autogen-deep-research/)** - AutoGen 프레임워크를 활용한 심층 리서치 및 이메일 최적화 에이전트
+- **[crewai-news-reader](./crewai-news-reader/)** - CrewAI를 활용한 뉴스 수집, 요약, 큐레이션 시스템
+- **[crewai-job-hunter](./crewai-job-hunter/)** - CrewAI를 활용한 채용 공고 분석 및 맞춤 지원 자료 생성 에이전트
+- **[crewai-content-pipeline](./crewai-content-pipeline/)** - CrewAI를 활용한 자동 반복 개선 기능이 포함된 콘텐츠 생성 파이프라인
 
 ### 향후 추가 예정 프로젝트
 
