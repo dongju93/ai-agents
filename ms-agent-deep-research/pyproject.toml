@@ -1,0 +1,14 @@
+[project]
+name = "ms-agent-deep-research"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "agent-framework>=1.0.0b251007",
+    "firecrawl-py>=4.4.0",
+    "python-dotenv>=1.1.1",
+]
+
+[dependency-groups]
+dev = []
