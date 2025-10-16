@@ -19,14 +19,22 @@ Microsoft의 새로운 **Agent Framework**를 사용하여 두 가지의 독립�
   - **Human-in-the-Loop**: 최종 승인 단계에서 사용자가 개입하여 결과물을 검토하거나 추가 작업을 요청할 수 있습니다.
   - **관찰성(Observability)**: OpenTelemetry 통합을 통해 에이전트 실행 과정을 추적하고 디버깅할 수 있습니다.
 
-### 2. 이메일 최적화 에이전트 (`email-optimizer.ipynb`)
+### 2. 이메일 최적화 에이전트 (`email_optimizer.py`)
 
 - **목표**: 간단한 이메일 초안을 명료성, 어조, 설득력 측면에서 전문가 에이전트들이 순차적으로 개선하여 최종 결과물을 완성합니다.
 - **핵심 기능**:
-  - **워크플로우 기반 협업**: 그래프 기반 워크플로우를 사용하여 '명료성 → 어조 → 설득력 → 종합 → 평가'의 데이터 플로우를 구현합니다.
+  - **순차 워크플로우(Sequential Workflow)**: `SequentialBuilder`를 사용하여 에이전트들이 공유 대화 컨텍스트에 순차적으로 응답을 추가하는 방식으로 동작합니다.
   - **전문가 역할 분담**: 각 에이전트는 명료성(Clarity), 어조(Tone), 설득력(Persuasion) 등 하나의 전문 분야에만 집중하여 초안을 수정합니다.
-  - **반복적 품질 개선**: 최종 평가를 담당하는 `CriticAgent`가 결과물이 기준에 미달한다고 판단하면, 개선점을 제시하며 워크플로우를 재실행합니다. 기준을 통과하면 프로세스를 종료합니다.
-  - **미들웨어 통합**: 예외 처리, 로깅, 요청/응답 변환을 위한 커스텀 미들웨어를 활용합니다.
+  - **미들웨어 기반 종료 조건**: 커스텀 `TerminationMiddleware`가 최대 메시지 수와 "TERMINATE" 키워드를 감지하여 워크플로우를 제어합니다.
+  - **스트리밍 실행**: `workflow.run_stream()`을 통해 워크플로우 이벤트를 실시간으로 처리하고 최종 결과를 `WorkflowOutputEvent`로 수신합니다.
+
+**마이그레이션 하이라이트 (AutoGen → MS Agent Framework)**:
+
+- `RoundRobinGroupChat` → `SequentialBuilder`: 순차적 에이전트 실행 패턴
+- `AssistantAgent` → `ChatAgent`: 에이전트 클래스 변경, `model_client` → `chat_client`, `system_message` → `instructions`
+- `OpenAIChatCompletionClient` → `OpenAIChatClient`: 모델 클라이언트 변경
+- `TextMentionTermination` & `MaxMessageTermination` → `TerminationMiddleware`: 종료 조건을 미들웨어 패턴으로 구현
+- `Console(team.run_stream())` → `workflow.run_stream()`: 워크플로우 실행 및 이벤트 처리 방식 변경
 
 ## 🤖 워크플로우
 
@@ -58,14 +66,20 @@ graph TD
     B --> C[ToneAgent];
     C --> D[PersuasionAgent];
     D --> E[SynthesizerAgent];
-    E --> F{CriticAgent};
-    F -- "Needs improvement" --> B;
-    F -- "Meets standards" --> G[End: Complete];
+    E --> F[CriticAgent];
+    F -- "TERMINATE detected" --> G[End: Complete];
+    F -- "Max messages reached" --> G;
 
     style A fill:#e1f5ff
     style G fill:#d4edda
-    style F fill:#f8d7da
+    style F fill:#fff3cd
 ```
+
+**워크플로우 설명**:
+
+- AutoGen 버전과 달리, MS Agent Framework의 `SequentialBuilder`는 단일 패스로 에이전트들을 순차 실행합니다.
+- `TerminationMiddleware`가 "TERMINATE" 키워드 또는 최대 메시지 수를 감지하여 워크플로우를 종료합니다.
+- 반복 실행이 필요한 경우, 애플리케이션 레벨에서 워크플로우를 재시작할 수 있습니다.
 
 ## 🛠 기술 스택 및 주요 구현
 
@@ -82,15 +96,18 @@ graph TD
 
 Microsoft Agent Framework로 마이그레이션하면서 다음과 같은 주요 변경이 이루어졌습니다:
 
-| 항목                  | AutoGen                                                  | Microsoft Agent Framework                 |
-| --------------------- | -------------------------------------------------------- | ----------------------------------------- |
-| **워크플로우 패턴**   | `SelectorGroupChat`, `RoundRobinGroupChat` (이벤트 기반) | Graph-based Workflow (데이터 플로우 기반) |
-| **에이전트 선택**     | LLM 기반 동적 선택                                       | 명시적 그래프 라우팅 + 조건부 분기        |
-| **미들웨어**          | 없음                                                     | 내장 미들웨어 시스템 제공                 |
-| **관찰성**            | 기본 로깅                                                | OpenTelemetry 통합                        |
-| **체크포인팅**        | 제한적                                                   | 네이티브 지원 (상태 저장/복원)            |
-| **Human-in-the-Loop** | `UserProxyAgent`                                         | Workflow interruption + approval nodes    |
-| **엔터프라이즈 기능** | 실험적                                                   | 프로덕션 준비 완료 (CI/CD, 컨테이너 배포) |
+| 항목                  | AutoGen                                                  | Microsoft Agent Framework                                |
+| --------------------- | -------------------------------------------------------- | -------------------------------------------------------- |
+| **워크플로우 패턴**   | `SelectorGroupChat`, `RoundRobinGroupChat` (이벤트 기반) | `SequentialBuilder`, `GraphBuilder` (데이터 플로우 기반) |
+| **에이전트 클래스**   | `AssistantAgent` (with `model_client`, `system_message`) | `ChatAgent` (with `chat_client`, `instructions`)         |
+| **모델 클라이언트**   | `OpenAIChatCompletionClient`                             | `OpenAIChatClient`                                       |
+| **종료 조건**         | `TextMentionTermination`, `MaxMessageTermination`        | 커스텀 `AgentMiddleware` 구현                            |
+| **워크플로우 실행**   | `Console(team.run_stream())`                             | `workflow.run_stream()` with `WorkflowOutputEvent`       |
+| **미들웨어**          | 없음                                                     | 내장 미들웨어 시스템 제공                                |
+| **관찰성**            | 기본 로깅                                                | OpenTelemetry 통합                                       |
+| **체크포인팅**        | 제한적                                                   | 네이티브 지원 (상태 저장/복원)                           |
+| **Human-in-the-Loop** | `UserProxyAgent`                                         | Workflow interruption + approval nodes                   |
+| **엔터프라이즈 기능** | 실험적                                                   | 프로덕션 준비 완료 (CI/CD, 컨테이너 배포)                |
 
 **마이그레이션 이점**:
 
@@ -98,6 +115,16 @@ Microsoft Agent Framework로 마이그레이션하면서 다음과 같은 주요
 - 엔터프라이즈 환경에 적합한 관찰성 및 모니터링
 - 클라우드 네이티브 배포 지원 (Kubernetes, Docker, Serverless)
 - Microsoft의 장기 지원 및 새로운 기능 추가
+
+**Email Optimizer 마이그레이션 특징**:
+
+AutoGen의 `email-optimizer.ipynb`에서 MS Agent Framework의 `email_optimizer.py`로 마이그레이션하면서:
+
+1. **워크플로우 아키텍처**: `RoundRobinGroupChat` → `SequentialBuilder`로 변경하여 에이전트들이 공유 대화 컨텍스트(`list[ChatMessage]`)에 순차적으로 응답을 추가하는 방식으로 구현
+2. **에이전트 정의**: `AssistantAgent` → `ChatAgent`로 변경, 파라미터명 변경 (`model_client` → `chat_client`, `system_message` → `instructions`)
+3. **종료 조건**: AutoGen의 선언적 종료 조건(`TextMentionTermination | MaxMessageTermination`)을 `TerminationMiddleware` 클래스로 재구현하여 미들웨어 패턴 활용
+4. **실행 패턴**: `Console(team.run_stream())`을 `workflow.run_stream()`으로 대체하고, `WorkflowOutputEvent`를 통해 최종 대화 이력 수신
+5. **철학적 변화**: AutoGen의 이벤트 기반 그룹 채팅에서 MS Agent Framework의 명시적 데이터 플로우 중심 워크플로우로 전환하여 더 예측 가능하고 디버깅이 용이한 구조로 개선
 
 ## 🤖 에이전트 구성
 
@@ -161,43 +188,127 @@ FIRECRAWL_API_KEY="your_firecrawl_api_key_here"
 
 ### 4. 실행
 
-JupyterLab을 실행하고, 각 `.ipynb` 파일을 열어 셀을 순차적으로 실행합니다.
+JupyterLab을 실행하여 노트북을 실행하거나, Python 스크립트를 직접 실행합니다.
 
 ```bash
-# JupyterLab 실행
+# JupyterLab 실행 (노트북 파일용)
 uv run jupyter lab
 ```
 
 - **`deep-research.ipynb`**: 마지막 셀의 `task` 변수에 리서치할 주제를 입력하고 실행합니다.
-- **`email-optimizer.ipynb`**: 마지막 셀의 `task` 변수에 최적화할 이메일 초안을 입력하고 실행합니다.
+
+**또는 Python 스크립트 직접 실행**:
+
+```bash
+# 이메일 최적화 에이전트 실행
+uv run python email_optimizer.py
+```
+
+- **`email_optimizer.py`**: 스크립트 내의 `test_email` 변수를 수정하여 최적화할 이메일 초안을 입력하고 실행합니다.
 
 ## 📁 프로젝트 구조
 
 ```
 ms-agent-deep-research/
-├── deep-research.ipynb     # 심층 리서치 에이전트 워크플로우
-├── email-optimizer.ipynb   # 이메일 최적화 에이전트 워크플로우
-├── agents/                 # 에이전트 정의 모듈
-│   ├── research_agents.py  # 리서치 관련 에이전트들
-│   └── email_agents.py     # 이메일 최적화 에이전트들
-├── workflows/              # 워크플로우 정의
-│   ├── research_workflow.py
-│   └── email_workflow.py
-├── tools/                  # 에이전트 도구
-│   ├── web_search.py       # 웹 검색 도구
-│   └── file_operations.py  # 파일 저장 도구
-├── middleware/             # 커스텀 미들웨어
-│   └── logging_middleware.py
-├── report.md               # [생성됨] 리서치 결과 보고서
-├── pyproject.toml          # 프로젝트 의존성
-├── .env                    # 환경 변수
-└── README.md
+├── .env               # 환경 변수
+├── .python-version    # 파이썬 버전
+├── email_optimizer.py # 이메일 최적화 에이전트
+├── pyproject.toml     # 프로젝트 의존성
+├── README.md          # 프로젝트 문서
+├── uv.lock            # uv 잠금 파일
+└── .venv/             # 가상 환경
 ```
+
+**주요 파일 설명**:
+
+- `email_optimizer.py`: 전문가 에이전트들의 협업을 통해 이메일 초안을 반복적으로 개선하는 에이전트입니다.
 
 ## 💻 최종 결과물
 
 - **`deep-research.ipynb`**: 실행이 완료되면 프로젝트 루트 디렉토리에 `report.md` 파일이 생성됩니다.
-- **`email-optimizer.ipynb`**: 최종적으로 개선된 이메일 텍스트가 콘솔에 출력됩니다.
+- **`email_optimizer.py`**: 최종적으로 개선된 이메일 텍스트와 전체 대화 이력이 콘솔에 출력됩니다.
+
+## 🔍 Email Optimizer 마이그레이션 핵심 개념
+
+### 1. 워크플로우 패러다임 변화
+
+**AutoGen (이벤트 기반)**:
+
+```python
+# RoundRobinGroupChat: 에이전트들이 순차적으로 대화에 참여
+team = RoundRobinGroupChat(
+    participants=[clarity_agent, tone_agent, ...],
+    termination_condition=text_termination | max_message_termination
+)
+await Console(team.run_stream(task="..."))
+```
+
+**MS Agent Framework (데이터 플로우 기반)**:
+
+```python
+# SequentialBuilder: 명시적 순차 워크플로우
+workflow = SequentialBuilder().participants([clarity_agent, tone_agent, ...]).build()
+async for event in workflow.run_stream(email_draft):
+    if isinstance(event, WorkflowOutputEvent):
+        conversation_history = event.data  # list[ChatMessage]
+```
+
+### 2. 에이전트 정의 변화
+
+**AutoGen**:
+
+```python
+clarity_agent = AssistantAgent(
+    name="ClarityAgent",
+    model_client=OpenAIChatCompletionClient(model="gpt-4o-mini"),
+    system_message="You are an expert editor..."
+)
+```
+
+**MS Agent Framework**:
+
+```python
+clarity_agent = ChatAgent(
+    name="ClarityAgent",
+    chat_client=OpenAIChatClient(model_id="gpt-4o-mini"),
+    instructions="You are an expert editor...",
+    middleware=[termination_middleware]
+)
+```
+
+### 3. 종료 조건 구현
+
+**AutoGen (선언적)**:
+
+```python
+text_termination = TextMentionTermination(text="TERMINATE")
+max_message_termination = MaxMessageTermination(max_messages=30)
+termination_conditions = text_termination | max_message_termination
+```
+
+**MS Agent Framework (미들웨어 패턴)**:
+
+```python
+class TerminationMiddleware(AgentMiddleware):
+    async def process(self, context: AgentRunContext, next) -> None:
+        self.message_count += 1
+        if self.message_count >= self.max_messages:
+            context.terminate = True
+            return
+        await next(context)
+        if "TERMINATE" in str(context.result):
+            context.terminate = True
+```
+
+### 4. 철학적 차이
+
+| 측면             | AutoGen                    | MS Agent Framework              |
+| ---------------- | -------------------------- | ------------------------------- |
+| **제어 흐름**    | 암묵적, 이벤트 기반        | 명시적, 데이터 플로우 기반      |
+| **예측 가능성**  | LLM이 대화 흐름 일부 제어  | 개발자가 완전히 제어            |
+| **디버깅**       | 대화 흐름 추적이 어려움    | 워크플로우 그래프로 명확한 추적 |
+| **확장성**       | 복잡한 시나리오에서 제한적 | 미들웨어와 그래프로 유연한 확장 |
+| **엔터프라이즈** | 실험적 단계                | 프로덕션 준비 완료              |
 
 ## 📚 참고 자료
 
